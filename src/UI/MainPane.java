@@ -3,9 +3,12 @@ package UI;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.JFrame;
+
 public class MainPane implements Observer{
 	
 	private Controller controller;
+	private JFrame frame;
 
 	public MainPane(Controller controller)
 	{
@@ -15,7 +18,9 @@ public class MainPane implements Observer{
 	@Override
 	public void drawTimeline(List<Date> dataset)
 	{
-		// TODO Auto-generated method stub
+		frame = new JFrame(); //creates new frame with set dimensions
+		frame.setSize(950, 400);
+		frame.setTitle("Plot");
 		
 	}
 
