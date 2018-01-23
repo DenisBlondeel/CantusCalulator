@@ -13,20 +13,12 @@ public class Cantus {
 	public String naam;
 	public String plaats;
 	
-	public Cantus(Date datum, String naam, String vereniging, String plaats){
-		this.datum = datum;
-		this.vereniging = vereniging;
-		this.naam = naam;
-		this.plaats = plaats;
-	}
-	public Cantus(Date datum, String naam, String vereniging){
-		this.datum = datum;
-		this.vereniging = vereniging;
-		this.naam = naam;
-	}
-
 	public Cantus(String str){
         String[] parts = str.split(",");
+        this.datum = dateer(parts[0]);
+        this.naam = parts[1];
+        this.vereniging = parts[2].toLowerCase();
+        this.plaats = (parts.length>2?null:parts[3]);
     }
 
     private Date dateer(String s){

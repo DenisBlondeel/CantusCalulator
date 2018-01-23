@@ -19,23 +19,12 @@ class CantusVerzameling {
 	   String Firstline = sc.nextLine();
         System.out.println(Firstline);
 
-	   if(Firstline.toLowerCase().contains("plaats".toLowerCase())){
-           System.out.println("plaats in eerste lijn");
-           while(sc.hasNext()){
-               Cantussen.add(new Cantus(dateer(sc.next()),sc.next(),sc.next(),sc.nextLine().substring(1)));
-
-           }
-           System.out.println(Cantussen);
-       }
-       else{
-           System.out.println("plaats niet in eerste lijn");
-           while(sc.hasNext()){
-               Cantus cantus= new Cantus(dateer(sc.next()),sc.next(),sc.nextLine().substring(1));
-               System.out.println(cantus);
-               Cantussen.add(cantus);
-           }
-           System.out.println(Cantussen.size() + " cantussen in CV");
-       }
+        while(sc.hasNext()){
+            Cantus cantus= new Cantus(sc.nextLine().substring(1));
+            System.out.println(cantus);
+            Cantussen.add(cantus);
+        }
+        System.out.println(Cantussen.size() + " cantussen in CV");
 
 	}
 
