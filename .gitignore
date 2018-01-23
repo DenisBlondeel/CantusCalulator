@@ -27,3 +27,4 @@ test\ reports/**
 tags
 
 *.swp
+/target/

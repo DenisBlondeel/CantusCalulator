@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.JFrame;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.axis.DateAxis;
 
 public class MainPane extends JFrame implements Observer{
 	
@@ -24,6 +26,9 @@ public class MainPane extends JFrame implements Observer{
 		frame.setSize(950, 400);
 		frame.setTitle("Plot");
 		frame.setVisible(true);
+		
+		DateAxis ax;
+		
 		this.pack();
 		this.setVisible(true);
 		
