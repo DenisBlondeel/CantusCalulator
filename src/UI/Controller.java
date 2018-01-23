@@ -10,12 +10,14 @@ import domain.Facade;
 public class Controller {
 
     private StartScreen screen;
+    private MainPane main;
     private Facade facade;
 
     public Controller()
     {
         facade = new Facade();
         screen = new StartScreen(this);
+        main = new MainPane(this);
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
@@ -26,6 +28,7 @@ public class Controller {
 
     public void init(String file) {
         getFacade().passFile(file);
+        facade.drawTimeline();
     }
 
     public Facade getFacade()
