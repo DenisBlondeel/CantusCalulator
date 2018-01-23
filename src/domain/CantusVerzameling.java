@@ -18,13 +18,17 @@ public class CantusVerzameling {
 
 	   if(Firstline.toLowerCase().contains("plaats".toLowerCase())){
            System.out.println("plaats in eerste lijn");
+           while(sc.hasNext()){
+               hs.add(new Cantus(dateer(sc.next()),sc.next(),sc.next(),sc.next()));
+           }
+           System.out.println(hs);
        }
        else{
            System.out.println("plaats niet in eerste lijn");
-           Date datum = dateer(sc.next());
-
-           Cantus cantus = new Cantus(datum,sc.next(),sc.next());
-           System.out.println(cantus.toString());
+           while(sc.hasNext()){
+               hs.add(new Cantus(dateer(sc.next()),sc.next(),sc.next()));
+           }
+           System.out.println(hs);
        }
 
 	}
