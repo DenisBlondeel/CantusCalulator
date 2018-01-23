@@ -5,5 +5,8 @@ package domain;
  */
 public class Facade {
     public CantusVerzameling CV;
-    
+    public Facade(){
+        this.CV = new CantusVerzameling();
+    }
+
 }
