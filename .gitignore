@@ -24,3 +24,6 @@ test\ reports/**
 .project
 .classpath
 
+tags
+
+*.swp

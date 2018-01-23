@@ -24,11 +24,11 @@ public class StartScreen extends JFrame {
 	private JTextField filename = new JTextField(), dir = new JTextField();
 	private Controller controller;
 
-	public StartScreen(Controller controller)
-	{
-		this.controller = controller;
-	}
-	
+    public StartScreen(Controller controller)
+    {
+        this.controller = controller;
+    }
+
 	public void drawStartScreen()
 	{
 		pane = new JPanel();
