@@ -2,16 +2,13 @@ package domain;
 import java.util.*;
 import java.text.*;
 
-
-import java.util.HashSet;
-
 class CantusVerzameling {
     private Reader reader;
-	public HashSet<Cantus> hs;
+	public List<Cantus> Cantussen;
     public Scanner sc;
 	
 	CantusVerzameling(){
-		this.hs = new HashSet<>();
+		this.Cantussen = new ArrayList<Cantus>();
 	}
 
 	public void init(String path){
@@ -25,19 +22,19 @@ class CantusVerzameling {
 	   if(Firstline.toLowerCase().contains("plaats".toLowerCase())){
            System.out.println("plaats in eerste lijn");
            while(sc.hasNext()){
-               hs.add(new Cantus(dateer(sc.next()),sc.next(),sc.next(),sc.next()));
+               Cantussen.add(new Cantus(dateer(sc.next()),sc.next(),sc.next(),sc.nextLine().substring(1)));
 
            }
-           System.out.println(hs);
+           System.out.println(Cantussen);
        }
        else{
            System.out.println("plaats niet in eerste lijn");
            while(sc.hasNext()){
                Cantus cantus= new Cantus(dateer(sc.next()),sc.next(),sc.nextLine().substring(1));
                System.out.println(cantus);
-               hs.add(cantus);
+               Cantussen.add(cantus);
            }
-           System.out.println(hs.size() + " cantussen in CV");
+           System.out.println(Cantussen.size() + " cantussen in CV");
        }
 
 	}
@@ -54,5 +51,26 @@ class CantusVerzameling {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<Date> getData(){
+        List<Date> ret = new ArrayList<Date>();
+        for(Cantus c: this.Cantussen)
+            ret.add(c.getDatum());
+	    return ret;
+    }
+
+    public List<String> getPlaatsen(){
+        List<String> ret = new ArrayList<String>();
+        for(Cantus c: this.Cantussen)
+            ret.add(c.getPlaats());
+        return ret;
+    }
+
+    public List<String> getVerenigingen(){
+        List<String> ret = new ArrayList<String>();
+        for(Cantus c: this.Cantussen)
+            ret.add(c.getVereniging());
+        return ret;
     }
 }
