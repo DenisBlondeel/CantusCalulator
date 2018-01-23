@@ -78,6 +78,12 @@ class CantusVerzameling {
 	
 	public void timeline()
 	{
+		System.out.println("draw timeline");
 		observer.drawTimeline(getData());
+	}
+	
+	public void setObserver(Observer observer)
+	{
+		this.observer = observer;
 	}
 }

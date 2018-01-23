@@ -1,5 +1,7 @@
 package domain;
 
+import UI.Observer;
+
 /**
  * Created by bart on 23/01/18.
  */
@@ -20,6 +22,11 @@ public class Facade {
 	public void drawTimeline()
 	{
 		CV.timeline();
+	}
+	
+	public void addObserver(Observer pane)
+	{
+		CV.setObserver(pane);
 	}
 
 }
