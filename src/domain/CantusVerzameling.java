@@ -12,7 +12,9 @@ public class CantusVerzameling {
 	CantusVerzameling(){
 		this.hs = new HashSet<>();
 	}
-	public void init(Scanner sc){
+
+	public void init(String file){
+	   Scanner sc = new Scanner(file);
 	   CantusVerzameling CV = new CantusVerzameling();
 	   String Firstline = sc.nextLine();
 

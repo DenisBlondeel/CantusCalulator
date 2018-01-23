@@ -10,7 +10,7 @@ public class Cantus {
 	public String naam;
 	public String plaats;
 	
-	public Cantus(Date datum, String vereniging, String naam, String plaats){
+	public Cantus(Date datum, String naam, String vereniging, String plaats){
 		this.datum = datum;
 		this.vereniging = vereniging;
 		this.naam = naam;
