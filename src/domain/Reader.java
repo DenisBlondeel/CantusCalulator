@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 public class Reader {
     public Scanner sc;
     public Reader(String fileName){
-        System.out.println(fileName);
         try {
             this.sc = new Scanner(new File(fileName));
         }

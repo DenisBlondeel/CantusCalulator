@@ -1,12 +1,11 @@
 package domain;
-import java.nio.file.FileStore;
 import java.util.*;
 import java.text.*;
-import java.io.FileNotFoundException;
+
 
 import java.util.HashSet;
 
-public class CantusVerzameling {
+class CantusVerzameling {
     private Reader reader;
 	public HashSet<Cantus> hs;
     public Scanner sc;
@@ -16,9 +15,9 @@ public class CantusVerzameling {
 	}
 
 	public void init(String path){
-	    this.reader = new Reader(path) ;
+	    this.reader = new Reader(path);
 	    this.sc= reader.sc;
-        System.out.println(sc.hasNext());
+        sc.useDelimiter(",");
 	   CantusVerzameling CV = new CantusVerzameling();
 	   String Firstline = sc.nextLine();
         System.out.println(Firstline);
@@ -27,17 +26,18 @@ public class CantusVerzameling {
            System.out.println("plaats in eerste lijn");
            while(sc.hasNext()){
                hs.add(new Cantus(dateer(sc.next()),sc.next(),sc.next(),sc.next()));
+
            }
            System.out.println(hs);
        }
        else{
            System.out.println("plaats niet in eerste lijn");
            while(sc.hasNext()){
-               System.out.println("yay");
-               hs.add(new Cantus(dateer(sc.next()),sc.next(),sc.next()));
+               Cantus cantus= new Cantus(dateer(sc.next()),sc.next(),sc.nextLine().substring(1));
+               System.out.println(cantus);
+               hs.add(cantus);
            }
-           System.out.println("yay2");
-           System.out.println(hs.size());
+           System.out.println(hs.size() + " cantussen in CV");
        }
 
 	}
