@@ -15,12 +15,9 @@ public static void main(String[] args) throws FileNotFoundException, IOException
         return ;
 	}
 	else{
-    //Scanner sc = new Scanner(new File(args[0]));
     Scanner in = new Scanner(Paths.get(args[0]));
-    
+    in.useDelimiter(",");
 	}
+	Facade f = new Facade();
 }
-	public CantusVerzameling Read(){
-		return null;
-	}
 }
