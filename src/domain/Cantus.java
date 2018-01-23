@@ -1,5 +1,6 @@
 package domain;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -25,13 +26,29 @@ public class Cantus {
 	}
 
 	public Cantus(String str){
-	    String d = 
+        String[] parts = str.split(",");
     }
 
-	public String toString(){
+    private Date dateer(String s){
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Date date = df.parse(s);
+            if(date.getYear()<100)
+                date.setYear(date.getYear()+2000);
+            return date;
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String toString(){
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		return "Cantus: " + naam + " op " + df.format(datum) + " bij " + vereniging;
 	}
+
+
 
     public Date getDatum() {
         return datum;
