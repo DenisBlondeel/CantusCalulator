@@ -18,6 +18,7 @@ public class StartScreen extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	JPanel pane;
+	private JTextField filename = new JTextField(), dir = new JTextField();
 
 	public StartScreen()
 	{
@@ -33,6 +34,17 @@ public class StartScreen extends JFrame {
 		final JFileChooser fc = new JFileChooser();
 		pane.add(fc);
 		
+		int rVal = fc.showOpenDialog(fc);
+	      if (rVal == JFileChooser.APPROVE_OPTION) {
+	        filename.setText(fc.getSelectedFile().getName());
+	        dir.setText(fc.getCurrentDirectory().toString());
+	      }
+	      if (rVal == JFileChooser.CANCEL_OPTION) {
+	        filename.setText("You pressed cancel");
+	        dir.setText("");
+	      }
+	      JLabel nameFile = new JLabel(filename.getText() + dir.getText());
+	      pane.add(nameFile);
 		pane.setVisible(true);
 		this.pack();
 		this.setVisible(true);
