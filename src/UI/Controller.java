@@ -3,6 +3,7 @@ package UI;
 import java.io.File;
 import java.util.Locale;
 import java.util.Scanner;
+import javax.swing.JFrame;
 
 import domain.Facade;
 
@@ -15,6 +16,7 @@ public class Controller {
 	{
 		facade = new Facade();
 		screen = new StartScreen(this);
+        screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	public void init()
