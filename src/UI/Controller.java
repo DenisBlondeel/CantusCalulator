@@ -4,28 +4,28 @@ import java.io.File;
 import java.util.Locale;
 import java.util.Scanner;
 
+import domain.Facade;
+
 public class Controller {
 
 	private StartScreen screen;
+	private Facade facade;
 	
 	public Controller()
 	{
-		screen = new StartScreen();
+		facade = new Facade();
+		screen = new StartScreen(this);
 	}
 	
 	public void init()
 	{
 		
-		screen.drawStartScreen(this);
-		
-		/*if(args.length == 0){
-	        System.out.println("no input was given.");
-	        return ;
-		}
-		else{
-	    Scanner sc = new Scanner(new File(args[0])).useLocale(Locale.US);
-	    
-		}*/
+		screen.drawStartScreen();
+	}
+	
+	public Facade getFacade()
+	{
+		return facade;
 	}
 
 }

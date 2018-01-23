@@ -19,12 +19,14 @@ public class StartScreen extends JFrame {
 	
 	JPanel pane;
 	private JTextField filename = new JTextField(), dir = new JTextField();
+	private Controller controller;
 
-	public StartScreen()
+	public StartScreen(Controller controller)
 	{
+		this.controller = controller;
 	}
 	
-	public void drawStartScreen(Controller controller)
+	public void drawStartScreen()
 	{
 		pane = new JPanel();
 		super.setContentPane(pane);
@@ -45,6 +47,7 @@ public class StartScreen extends JFrame {
 	      }
 	      JLabel nameFile = new JLabel(filename.getText() + dir.getText());
 	      pane.add(nameFile);
+	      controller.getFacade().passFile(dir.getText() + filename.getText());
 		pane.setVisible(true);
 		this.pack();
 		this.setVisible(true);
