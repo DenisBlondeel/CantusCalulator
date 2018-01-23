@@ -50,10 +50,10 @@ public class StartScreen extends JFrame {
 	    if (rVal == JFileChooser.CANCEL_OPTION) {
 	        filename.setText("You pressed cancel");
 	        dir.setText("");
-	    }
-	    JLabel nameFile = new JLabel(filename.getText() + dir.getText());
-	    pane.add(nameFile);
-	    controller.getFacade().passFile(dir.getText() + filename.getText());
+	      }
+	      JLabel nameFile = new JLabel(filename.getText() + dir.getText());
+	      pane.add(nameFile);
+	      controller.getFacade().passFile(dir.getText() + "/" + filename.getText());
 		pane.setVisible(true);
 		this.pack();
 		this.setVisible(true);
