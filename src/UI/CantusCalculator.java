@@ -8,6 +8,14 @@ import java.nio.file.Paths;
 
 public class CantusCalculator {
 
+<<<<<<< HEAD
+
+	public static void main(String[] args) 
+		{
+			Controller controller = new Controller();
+			controller.init();
+		}
+=======
 	public CantusVerzameling CV;
 public static void main(String[] args) throws FileNotFoundException, IOException{
 	if(args.length == 0){
@@ -20,4 +28,5 @@ public static void main(String[] args) throws FileNotFoundException, IOException
 	}
 	Facade f = new Facade();
 }
+>>>>>>> branch 'master' of https://github.com/r0372092/CantusCalulator
 }
