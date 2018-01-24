@@ -8,10 +8,10 @@ import java.util.Date;
 public class Cantus {
 
 
-    public Date datum;
-	public String vereniging;
-	public String naam;
-	public String plaats;
+    private Date datum;
+    private String vereniging;
+    private String naam;
+    private String plaats;
 	
 	public Cantus(String str){
         String[] parts = str.split(",");
@@ -29,8 +29,9 @@ public class Cantus {
 
         try {
             Date date = df.parse(s);
-            if(date.getYear()<100)
-                date.setYear(date.getYear()+2000);
+            if(date.getYear()<100) {
+                date.setYear(date.getYear() + 2000);
+            }
             return date;
 
         } catch (ParseException e) {

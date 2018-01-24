@@ -1,7 +1,6 @@
 package domain;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,35 +12,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-public class ExcelReading {
+class ExcelReading {
 
-
-    /**
-     * @param args the command line arguments
-
-    public static void main(String[] args) {
-        boolean debugOn=false;
-        String sourceDir=args[0];
-        if(args.length==3){
-            debugOn=true;
-        }
-        System.out.println(debugOn);
-        File folder = new File(sourceDir);
-
-        File[] listOfFiles = folder.listFiles();
-
-        for (int i = 0; i < listOfFiles.length; i++) {
-            File file = listOfFiles[i];
-            if(file.exists()){
-                Convertfile(file,args[1],debugOn);
-            }
-        }
-
-    }
-     */
-
-    public static void convert(File inputFile,String target, boolean debugOn){
+    static void convert(File inputFile,String target, boolean debugOn){
         InputStream inp = null;
         try {
             print("inputFile.getName()"+inputFile.getName(),debugOn);
@@ -49,7 +22,6 @@ public class ExcelReading {
             print("file read",debugOn);
             Workbook wb = WorkbookFactory.create(inp);
             //Workbook wb = WorkbookFactory.create(inp);
-            String filename=getFileName(inputFile);
             print("targetDir="+target,debugOn);
             File fout = new File(target);
             print("fout="+fout.getName(),debugOn);
@@ -63,14 +35,11 @@ public class ExcelReading {
             }
             osw.close();
             print("file closed",debugOn);
-        } catch (InvalidFormatException ex) {
-            Logger.getLogger(ExcelReading.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(ExcelReading.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (InvalidFormatException | IOException ex) {
             Logger.getLogger(ExcelReading.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
+                assert inp != null;
                 inp.close();
             } catch (IOException ex) {
                 Logger.getLogger(ExcelReading.class.getName()).log(Level.SEVERE, null, ex);
@@ -79,17 +48,17 @@ public class ExcelReading {
 
 
     }
-    public static void echoAsCSV(Sheet sheet,OutputStreamWriter osw, boolean debugOn)throws IOException {
+    private static void echoAsCSV(Sheet sheet, OutputStreamWriter osw, boolean debugOn)throws IOException {
         print("sheet.getSheetName()"+sheet.getSheetName(),debugOn);
-        Row row = null;
+        Row row;
         print("sheet.getLastRowNum()="+sheet.getLastRowNum(),debugOn);
         for (int i = 0; i <=sheet.getLastRowNum(); i++) {
             row = sheet.getRow(i);
-            String line="";
+            StringBuilder line= new StringBuilder();
             if(row!=null){
                 for (int j = 0; j < row.getLastCellNum(); j++) {
                     if(row.getCell(j) != null && !row.getCell(j).toString().equals("")){
-                        line+= row.getCell(j)+ "," ;
+                        line.append(row.getCell(j)).append(",");
 
 
                     }

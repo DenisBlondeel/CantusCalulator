@@ -1,32 +1,28 @@
 package domain;
 
 import java.util.*;
-import java.text.*;
 import UI.Observer;
 
 class CantusVerzameling {
-	private Reader reader;
 	private List<Cantus> Cantussen;
-	private Scanner sc;
 	private Observer observer;
 	
 	CantusVerzameling()
 	{
-		this.Cantussen = new ArrayList<Cantus>();
+		this.Cantussen = new ArrayList<>();
 	}
 
-	public void init(String path)
+	void init(String path)
 	{
-		this.reader = new Reader(path);
-		this.sc = reader.sc;
+		Reader reader = new Reader(path);
+		Scanner sc = reader.sc;
 		sc.useDelimiter(",");
-		CantusVerzameling CV = new CantusVerzameling();
 		String Firstline = sc.nextLine();
 		System.out.println(Firstline);
 
 		while (sc.hasNext())
 		{
-			Cantus cantus = new Cantus(sc.nextLine().substring(0));
+			Cantus cantus = new Cantus(sc.nextLine());
 			System.out.println(cantus);
 			Cantussen.add(cantus);
 		}
@@ -34,27 +30,9 @@ class CantusVerzameling {
 
 	}
 
-	private Date dateer(String s)
+	private List<Date> getData()
 	{
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		try
-		{
-			Date date = df.parse(s);
-			if (date.getYear() < 100)
-				date.setYear(date.getYear() + 2000);
-			return date;
-
-		}
-		catch (ParseException e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public List<Date> getData()
-	{
-		List<Date> ret = new ArrayList<Date>();
+		List<Date> ret = new ArrayList<>();
 		for (Cantus c : this.Cantussen)
 			ret.add(c.getDatum());
 		return ret;
@@ -62,7 +40,7 @@ class CantusVerzameling {
 
 	public List<String> getPlaatsen()
 	{
-		List<String> ret = new ArrayList<String>();
+		List<String> ret = new ArrayList<>();
 		for (Cantus c : this.Cantussen)
 			ret.add(c.getPlaats());
 		return ret;
@@ -70,19 +48,19 @@ class CantusVerzameling {
 
 	public List<String> getVerenigingen()
 	{
-		List<String> ret = new ArrayList<String>();
+		List<String> ret = new ArrayList<>();
 		for (Cantus c : this.Cantussen)
 			ret.add(c.getVereniging());
 		return ret;
 	}
 	
-	public void timeline()
+	void timeline()
 	{
 		System.out.println("draw timeline");
 		observer.drawTimeline(getData());
 	}
 	
-	public void setObserver(Observer observer)
+	void setObserver(Observer observer)
 	{
 		this.observer = observer;
 	}
