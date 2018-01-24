@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 public class ExcelReading {
 
 
@@ -47,6 +48,7 @@ public class ExcelReading {
             inp = new FileInputStream(inputFile);
             print("file read",debugOn);
             Workbook wb = WorkbookFactory.create(inp);
+            //Workbook wb = WorkbookFactory.create(inp);
             String filename=getFileName(inputFile);
             print("targetDir="+target,debugOn);
             File fout = new File(target);
