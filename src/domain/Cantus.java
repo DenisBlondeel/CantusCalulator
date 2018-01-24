@@ -22,7 +22,11 @@ public class Cantus {
     }
 
     private Date dateer(String s){
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        if(s.contains("/")){
+            df = new SimpleDateFormat("dd/MM/yyyy");
+        }
+
         try {
             Date date = df.parse(s);
             if(date.getYear()<100)

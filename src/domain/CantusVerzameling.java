@@ -26,7 +26,7 @@ class CantusVerzameling {
 
 		while (sc.hasNext())
 		{
-			Cantus cantus = new Cantus(sc.nextLine().substring(1));
+			Cantus cantus = new Cantus(sc.nextLine().substring(0));
 			System.out.println(cantus);
 			Cantussen.add(cantus);
 		}
