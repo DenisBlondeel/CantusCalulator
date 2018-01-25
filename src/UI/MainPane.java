@@ -1,5 +1,6 @@
 package UI;
 
+import java.awt.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,6 +43,9 @@ public class MainPane extends JFrame implements Observer{
 		this.controller = controller;
 	}
 
+	/*
+	gaat er van uit dat dataset gesorteerd is, kan niet in de tijd reizen.
+	 */
 	@Override
 	public void drawTimeline(List<Calendar> dataset)
 	{
@@ -58,9 +62,15 @@ public class MainPane extends JFrame implements Observer{
 				constructTSC(dataset));
 
 		XYPlot plot = (XYPlot)chart.getPlot();
-		//plot.setBackgroundPaint(new Color(255,228,196));
+		plot.setBackgroundPaint(new Color(255,255,255));
+        plot.setDomainGridlinePaint(new Color(155,155,155));
+        plot.setRangeGridlinePaint(new Color(155,155,155));
 
-		ChartPanel panel = new ChartPanel(chart);
+        for (int i = 0; i < plot.getSeriesCount(); i++) {
+            plot.getRenderer().setSeriesStroke(i,new BasicStroke(2.0f));
+        }
+
+        ChartPanel panel = new ChartPanel(chart);
 		setContentPane(panel);
 
 		frame.setVisible(true);
@@ -71,6 +81,44 @@ public class MainPane extends JFrame implements Observer{
 		this.setVisible(true);
 		
 	}
+
+    public TimeSeriesCollection constructTSC(List<Calendar> dataset){
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        TimeSeriesCollection tsc = new TimeSeriesCollection();
+        TimeSeries series = new TimeSeries("Series1");
+        int i = 1;
+
+        Calendar previous,c;
+        //Calendar c = dataset.get(1);
+        System.out.println(series.getKey());
+        while(i < dataset.size()){
+            c = dataset.get(i);
+
+            Period p = getPeriod(c);
+            if(i == 1){
+                series.setKey(p.name().toLowerCase() + "1");
+                addCount(p);
+            }
+            else {
+                previous = dataset.get(i-1);
+                if (diffPeriod(previous,c)) {
+                    series.addOrUpdate(new Day(c.getTime()),i);
+                    tsc.addSeries(series);
+                    series = new TimeSeries(p.name().toLowerCase() + getCount(p));
+                    System.out.println("diff: " + df.format(c.getTime())+ " start " + p.name().toLowerCase() + getCount(p));
+                    addCount(p);
+                }
+
+
+            }
+            series.addOrUpdate(new Day(c.getTime()),i);
+            i++;
+
+        }
+        System.out.println(series.getItemCount());
+        tsc.addSeries(series);
+        return tsc;
+    }
 
 	public enum Period {
 		SEMESTER, SUMMER, WINTER
@@ -106,6 +154,11 @@ public class MainPane extends JFrame implements Observer{
 		return TimeUnit.MILLISECONDS.toDays(Math.abs(end - start)) + 1;
 	}
 
+
+	/*
+	berekend de start van het academiejaar voor datum c
+	de eerste maandag na de 20ste september die c voorafgaat
+	 */
 	public Calendar getStartYear(Calendar c){
 		Calendar c2 = Calendar.getInstance();
 		c2.set(c.get(c.YEAR),8,20);
@@ -116,44 +169,15 @@ public class MainPane extends JFrame implements Observer{
 		return c2;
 	}
 
-	public TimeSeriesCollection constructTSC(List<Calendar> dataset){
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		TimeSeriesCollection tsc = new TimeSeriesCollection();
-		TimeSeries series = new TimeSeries("Series1");
-		int i = 1;
 
-		Calendar previous,c;
-		//Calendar c = dataset.get(1);
-		System.out.println(series.getKey());
-		while(i < dataset.size()){
-			c = dataset.get(i);
-
-			Period p = getPeriod(c);
-			if(i == 1){
-				series.setKey(p.name().toLowerCase() + "1");
-				addCount(p);
-			}
-			else {
-				previous = dataset.get(i-1);
-				if (diffPeriod(previous,c)) {
-					series.addOrUpdate(new Day(c.getTime()),i);
-					tsc.addSeries(series);
-					series = new TimeSeries(p.name().toLowerCase() + getCount(p));
-					System.out.println("diff: " + df.format(c.getTime())+ " start " + p.name().toLowerCase() + getCount(p));
-					addCount(p);
-				}
-
-
-			}
-			series.addOrUpdate(new Day(c.getTime()),i);
-			i++;
-
-		}
-		System.out.println(series.getItemCount());
-		tsc.addSeries(series);
-		return tsc;
-	}
-
+    /*
+    kijkt na of first en second in een verschillende periode liggen:
+    valt first voor de start van het academiejaar van second?
+    semester 1: start academiejaar .. 89 dagen later
+    winter: 89dagen na start .. 140 dagen na start
+    semester 2: 140 dagen na start .. 191 dagen na start
+    zomer: 191 dagen na start .. volgende academiejaar.
+     */
 	public boolean diffPeriod(Calendar first, Calendar second){
 		Calendar start = getStartYear(second);
 		long d1 = daysBetween(start,first);
