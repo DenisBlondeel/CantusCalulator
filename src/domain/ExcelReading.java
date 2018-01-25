@@ -20,7 +20,7 @@ class ExcelReading {
             print("inputFile.getName()"+inputFile.getName(),debugOn);
             inp = new FileInputStream(inputFile);
             print("file read",debugOn);
-            Workbook wb = WorkbookFactory.create(inp);
+            Workbook wb = WorkbookFactory.create(new File(inputFile.getPath()));
             //Workbook wb = WorkbookFactory.create(inp);
 
             print("targetDir="+target,debugOn);
