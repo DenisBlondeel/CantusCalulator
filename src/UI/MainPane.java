@@ -1,7 +1,12 @@
 package UI;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 import org.jfree.chart.ChartFactory;
@@ -20,8 +25,13 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 
+
+
 public class MainPane extends JFrame implements Observer{
-	
+
+	int semestercount = 1;
+	int summercount = 1;
+	int wintercount = 1;
 	private static final long serialVersionUID = -9090407129402452701L;
 	
 	private Controller controller;
@@ -33,24 +43,19 @@ public class MainPane extends JFrame implements Observer{
 	}
 
 	@Override
-	public void drawTimeline(List<Date> dataset)
+	public void drawTimeline(List<Calendar> dataset)
 	{
+
 		frame = new JFrame(); //creates new frame with set dimensions
 		frame.setSize(950, 400);
 		frame.setTitle("Plot");
-		int i = 1;
-		TimeSeriesCollection ds = new TimeSeriesCollection();
-		TimeSeries series = new TimeSeries("Series1");
-		for(Date d: dataset){
-			series.addOrUpdate(new Day(d),i);
-			i++;
-		}
-		ds.addSeries(series);
+
+
 		JFreeChart chart = ChartFactory.createTimeSeriesChart(
 				"cantustijdlijn test", // Chart
 				"Date", // X-Axis Label
 				"cantus", // Y-Axis Label
-				ds);
+				constructTSC(dataset));
 
 		XYPlot plot = (XYPlot)chart.getPlot();
 		//plot.setBackgroundPaint(new Color(255,228,196));
@@ -65,6 +70,118 @@ public class MainPane extends JFrame implements Observer{
 		this.pack();
 		this.setVisible(true);
 		
+	}
+
+	public enum Period {
+		SEMESTER, SUMMER, WINTER
+	}
+
+	public Period getPeriod(Calendar c){
+
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		Calendar c2 = getStartYear(c);
+		Period p;
+		//System.out.println(df.format(c.getTime()) + " was " + daysBetween(c2,c) + " after start of semester " + df.format(c2.getTime()));
+		if (daysBetween(c2,c) <= 89){
+			p = Period.SEMESTER;
+		}else if (daysBetween(c2,c) <= 140){
+			p = Period.WINTER;
+		}else if (daysBetween(c2,c) <= 191){
+			p = Period.SEMESTER;
+		}else {
+			p = Period.SUMMER;
+		}
+		System.out.println(df.format(c.getTime()) + " was in de " + p.name().toLowerCase());
+		return p;
+	}
+
+	private void nextMonday(Calendar c){
+		while(c.get(c.DAY_OF_WEEK)!=2)
+			c.add(c.DATE,1);
+	}
+
+	public static long daysBetween(Calendar startDate, Calendar endDate) {
+		long end = endDate.getTimeInMillis();
+		long start = startDate.getTimeInMillis();
+		return TimeUnit.MILLISECONDS.toDays(Math.abs(end - start)) + 1;
+	}
+
+	public Calendar getStartYear(Calendar c){
+		Calendar c2 = Calendar.getInstance();
+		c2.set(c.get(c.YEAR),8,20);
+		//========================System.out.println(df.format(c2.getTime()));
+		if(c.before(c2))
+			c2.set(c2.YEAR,c.get(c.YEAR)-1);
+		nextMonday(c2);
+		return c2;
+	}
+
+	public TimeSeriesCollection constructTSC(List<Calendar> dataset){
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		TimeSeriesCollection tsc = new TimeSeriesCollection();
+		TimeSeries series = new TimeSeries("Series1");
+		int i = 1;
+
+		Calendar previous,c;
+		//Calendar c = dataset.get(1);
+		System.out.println(series.getKey());
+		while(i < dataset.size()){
+			c = dataset.get(i);
+
+			Period p = getPeriod(c);
+			if(i == 1){
+				series.setKey(p.name().toLowerCase() + "1");
+				addCount(p);
+			}
+			else {
+				previous = dataset.get(i-1);
+				if (diffPeriod(previous,c)) {
+					series.addOrUpdate(new Day(c.getTime()),i);
+					tsc.addSeries(series);
+					series = new TimeSeries(p.name().toLowerCase() + getCount(p));
+					System.out.println("diff: " + df.format(c.getTime())+ " start " + p.name().toLowerCase() + getCount(p));
+					addCount(p);
+				}
+
+
+			}
+			series.addOrUpdate(new Day(c.getTime()),i);
+			i++;
+
+		}
+		System.out.println(series.getItemCount());
+		tsc.addSeries(series);
+		return tsc;
+	}
+
+	public boolean diffPeriod(Calendar first, Calendar second){
+		Calendar start = getStartYear(second);
+		long d1 = daysBetween(start,first);
+		long d2 = daysBetween(start,second);
+		return (first.before(start) ||
+				(d1<89 && d2 >= 89) ||
+				(d1<140 && d2 >= 140)||
+				(d1<191 && d2 >= 191));
+		}
+
+
+	public int getCount(Period p){
+		if(p.equals(Period.SEMESTER))
+			return semestercount;
+		if(p.equals(Period.SUMMER))
+			return summercount;
+		return wintercount;
+	}
+
+	public void addCount(Period p){
+		if(p.equals(Period.SEMESTER)) {
+			System.out.println("add semester count");
+			semestercount++;
+		}
+		if(p.equals(Period.SUMMER))
+			summercount++;
+		if(p.equals(Period.WINTER))
+			wintercount++;
 	}
 
 }
