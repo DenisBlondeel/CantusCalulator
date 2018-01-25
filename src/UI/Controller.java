@@ -28,6 +28,7 @@ public class Controller {
     	
         screen.drawStartScreen();
         facade.drawTimeline();
+        facade.drawPieChart();
     }
 
     public void init(String file) {

@@ -59,6 +59,12 @@ class CantusVerzameling {
 		System.out.println("draw timeline");
 		observer.drawTimeline(getData());
 	}
+
+	void verenigingPie()
+    {
+        System.out.println("draw timeline");
+        observer.drawPieChart(getVerenigingen());
+    }
 	
 	void setObserver(Observer observer)
 	{

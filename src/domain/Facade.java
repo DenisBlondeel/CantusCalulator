@@ -23,6 +23,8 @@ public class Facade {
 	{
 		CV.timeline();
 	}
+
+	public void drawPieChart(){CV.verenigingPie();}
 	
 	public void addObserver(Observer pane)
 	{

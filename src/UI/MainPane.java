@@ -21,11 +21,13 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 
+import static org.jfree.util.SortOrder.DESCENDING;
 
 
 public class MainPane extends JFrame implements Observer{
@@ -42,6 +44,68 @@ public class MainPane extends JFrame implements Observer{
 	{
 		this.controller = controller;
 	}
+
+    /*
+    gaat er van uit dat dataset gesorteerd is, kan niet in de tijd reizen.
+     */
+    //@Override
+    public void drawPieChart(List<String> dataset) {
+        dataset.sort(String::compareTo);
+        frame = new JFrame(); //creates new frame with set dimensions
+        frame.setSize(950, 400);
+        frame.setTitle("Plot");
+
+        DefaultPieDataset ds = new DefaultPieDataset();
+        for (String s: dataset){
+            System.out.println("vereniging: " + s);
+            if (ds.getKeys().contains(s)) {
+                System.out.println(ds.getValue(s));
+                ds.setValue(s,ds.getValue(s).intValue()+1);
+            }  else
+                ds.setValue(s,1);
+        }
+        ds.sortByValues(DESCENDING);
+        JFreeChart chart = ChartFactory.createPieChart(
+                "test",                  // chart title
+                ds,                // data
+                true,                   // include legend
+                true,
+                false
+        );
+        ChartPanel panel = new ChartPanel(chart);
+        setContentPane(panel);
+
+        frame.setVisible(true);
+
+        DateAxis ax;
+
+        this.pack();
+        this.setVisible(true);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/*
+	==========TIMELINE==========
+	==========TIMELINE==========
+	==========TIMELINE==========
+	==========TIMELINE==========
+	 */
+
+
+
+
 
 	/*
 	gaat er van uit dat dataset gesorteerd is, kan niet in de tijd reizen.
