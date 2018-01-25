@@ -23,16 +23,16 @@ class CantusVerzameling {
 		while (sc.hasNext())
 		{
 			Cantus cantus = new Cantus(sc.nextLine());
-			System.out.println(cantus);
+			//System.out.println(cantus);
 			Cantussen.add(cantus);
 		}
 		System.out.println(Cantussen.size() + " cantussen in CV");
 
 	}
 
-	private List<Date> getData()
+	private List<Calendar> getData()
 	{
-		List<Date> ret = new ArrayList<>();
+		List<Calendar> ret = new ArrayList<>();
 		for (Cantus c : this.Cantussen)
 			ret.add(c.getDatum());
 		return ret;

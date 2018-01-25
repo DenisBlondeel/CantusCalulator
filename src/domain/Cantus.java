@@ -23,7 +23,7 @@ public class Cantus {
     }
 
     private Calendar dateer(String s){
-        System.out.println(s);
+        //System.out.println(s);
         DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         if(s.contains("/")){
             df = new SimpleDateFormat("dd/MM/yyyy");
@@ -33,8 +33,10 @@ public class Cantus {
             Date d = df.parse(s);
             Calendar date = Calendar.getInstance();
             date.setTime(d);
+            if(date.get(date.YEAR)<100)
+                date.set(date.YEAR,date.get(date.YEAR)+2000);
 
-            System.out.println(date.getTime());
+            //System.out.println(date.getTime());
             return date;
 
         } catch (ParseException e) {
