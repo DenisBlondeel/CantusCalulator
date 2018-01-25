@@ -2,13 +2,14 @@ package domain;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 
 public class Cantus {
 
 
-    private Date datum;
+    private Calendar datum;
     private String vereniging;
     private String naam;
     private String plaats;
@@ -21,17 +22,19 @@ public class Cantus {
         this.plaats = (parts.length>2?null:parts[3]);
     }
 
-    private Date dateer(String s){
+    private Calendar dateer(String s){
+        System.out.println(s);
         DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         if(s.contains("/")){
             df = new SimpleDateFormat("dd/MM/yyyy");
         }
 
         try {
-            Date date = df.parse(s);
-            if(date.getYear()<100) {
-                date.setYear(date.getYear() + 2000);
-            }
+            Date d = df.parse(s);
+            Calendar date = Calendar.getInstance();
+            date.setTime(d);
+
+            System.out.println(date.getTime());
             return date;
 
         } catch (ParseException e) {
@@ -42,16 +45,16 @@ public class Cantus {
 
     public String toString(){
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		return "Cantus: " + naam + " op " + df.format(datum) + " bij " + vereniging;
+		return "Cantus: " + naam + " op " + df.format(datum.getTime()) + " bij " + vereniging;
 	}
 
 
 
-    public Date getDatum() {
+    public Calendar getDatum() {
         return datum;
     }
 
-    public void setDatum(Date datum) {
+    public void setDatum(Calendar datum) {
         this.datum = datum;
     }
 
