@@ -5,13 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
+
 class ExcelReading {
 
     static void convert(File inputFile,String target, boolean debugOn){
@@ -53,13 +53,28 @@ class ExcelReading {
         print("sheet.getSheetName()"+sheet.getSheetName(),debugOn);
         Row row;
         print("sheet.getLastRowNum()="+sheet.getLastRowNum(),debugOn);
+        DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         for (int i = 0; i <=sheet.getLastRowNum(); i++) {
             row = sheet.getRow(i);
             StringBuilder line= new StringBuilder();
             if(row!=null){
                 for (int j = 0; j < row.getLastCellNum(); j++) {
                     if(row.getCell(j) != null && !row.getCell(j).toString().equals("")){
-                        line.append(row.getCell(j)).append(",");
+
+                        if(row.getCell(j).getCellType() == row.getCell(j).CELL_TYPE_FORMULA) {
+                            if(DateUtil.isCellDateFormatted(row.getCell(j))){
+                                System.out.println(row.getCell(j).getNumericCellValue() + " = " + row.getCell(j).getDateCellValue() + " = " + df.format(row.getCell(j).getDateCellValue()));
+                                line.append(df.format(row.getCell(j).getDateCellValue())).append(",");
+                            } else if(row.getCell(j).getCachedFormulaResultType()==row.getCell(j).CELL_TYPE_NUMERIC){
+                                line.append(row.getCell(j).getNumericCellValue()).append(",");
+                            } else{
+                                line.append(row.getCell(j).getRichStringCellValue()).append(",");
+                            }
+                        }
+                        else{
+                            line.append(row.getCell(j)).append(",");
+                        }
+
 
 
                     }
