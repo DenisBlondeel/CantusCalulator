@@ -26,7 +26,10 @@ import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
+import org.jfree.chart.axis.NumberAxis;
 
+
+import static java.util.Collections.frequency;
 import static org.jfree.util.SortOrder.DESCENDING;
 
 
@@ -50,19 +53,22 @@ public class MainPane extends JFrame implements Observer{
      */
     //@Override
     public void drawPieChart(List<String> dataset) {
-        dataset.sort(String::compareTo);
+    	if(containsNotNull(dataset))
+        	dataset.sort(String::compareTo);
         frame = new JFrame(); //creates new frame with set dimensions
         frame.setSize(950, 400);
         frame.setTitle("Plot");
 
         DefaultPieDataset ds = new DefaultPieDataset();
         for (String s: dataset){
-            System.out.println("vereniging: " + s);
-            if (ds.getKeys().contains(s)) {
-                System.out.println(ds.getValue(s));
-                ds.setValue(s,ds.getValue(s).intValue()+1);
-            }  else
-                ds.setValue(s,1);
+			if(s != null && s.length()>0) {
+				//System.out.println("string: " + s);
+				if (ds.getKeys().contains(s)) {
+					//System.out.println(ds.getValue(s));
+					ds.setValue(s, ds.getValue(s).intValue() + 1);
+				} else
+					ds.setValue(s, 1);
+			}
         }
         ds.sortByValues(DESCENDING);
         JFreeChart chart = ChartFactory.createPieChart(
@@ -82,6 +88,13 @@ public class MainPane extends JFrame implements Observer{
         this.pack();
         this.setVisible(true);
     }
+
+    public boolean containsNotNull(List<String> l){
+    	for(String s: l)
+    		if(s != null && s.length()>0)
+    			return true;
+    	return false;
+	}
 
 
 
@@ -114,6 +127,7 @@ public class MainPane extends JFrame implements Observer{
 	public void drawTimeline(List<Calendar> dataset)
 	{
 		dataset.sort(Calendar::compareTo);
+		genCumul(dataset,7);
 		frame = new JFrame(); //creates new frame with set dimensions
 		frame.setSize(950, 400);
 		frame.setTitle("Plot");
@@ -133,6 +147,8 @@ public class MainPane extends JFrame implements Observer{
         for (int i = 0; i < plot.getSeriesCount(); i++) {
             plot.getRenderer().setSeriesStroke(i,new BasicStroke(2.0f));
         }
+		plot.setDataset(1, new TimeSeriesCollection(genCumul(dataset,7)));
+		plot.setDataset(2, new TimeSeriesCollection(genCumul(dataset,31)));
 
         ChartPanel panel = new ChartPanel(chart);
 		setContentPane(panel);
@@ -158,6 +174,7 @@ public class MainPane extends JFrame implements Observer{
         while(i < dataset.size()){
             c = dataset.get(i);
 
+
             Period p = getPeriod(c);
             if(i == 0){
                 series.setKey(p.name().toLowerCase() + "1");
@@ -170,11 +187,9 @@ public class MainPane extends JFrame implements Observer{
                     tsc.addSeries(series);
                     series = new TimeSeries(p.name().toLowerCase() + getCount(p));
                     //System.out.println("diff: " + df.format(c.getTime())+ " start " + p.name().toLowerCase() + getCount(p));
-					System.out.println( df.format(c.getTime()) + "startte " + p.name().toLowerCase() + getCount(p));
+					//System.out.println( df.format(c.getTime()) + "startte " + p.name().toLowerCase() + getCount(p));
 					addCount(p);
                 }
-
-
             }
             series.addOrUpdate(new Day(c.getTime()),i+1);
             i++;
@@ -184,6 +199,28 @@ public class MainPane extends JFrame implements Observer{
         tsc.addSeries(series);
         return tsc;
     }
+
+    public TimeSeries genCumul(List<Calendar> ds, int i){
+		TimeSeries series = new TimeSeries("Cumul" + i);
+    	Calendar start = (Calendar) ds.get(0).clone();
+    	Calendar end = (Calendar) ds.get(ds.size()-1).clone();
+    	Calendar preStart= (Calendar) start.clone();
+    	preStart.add(preStart.DATE,-i);
+    	int count=0;
+    	while(start.before(end)){
+    		if(ds.contains(preStart))
+				count-=frequency(ds,preStart);
+			if(ds.contains(start)){
+				count+=frequency(ds,start);
+			}
+			System.out.println(start.getTime()+ " cumul is " + count);
+			series.addOrUpdate(new Day(start.getTime()),count);
+    		start.add(start.DATE,1);
+			preStart.add(preStart.DATE,1);
+		}
+
+    	return series;
+	}
 
 	public enum Period {
 		SEMESTER, SUMMER, WINTER
@@ -253,7 +290,7 @@ de eerste maandag na de 20ste september die c voorafgaat
 		long d2 = daysBetween(start,second);
 
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		System.out.println(df.format(start.getTime()) +" + "+ d2 + " = second =" +  df.format(second.getTime()));
+		//System.out.println(df.format(start.getTime()) +" + "+ d2 + " = second =" +  df.format(second.getTime()));
 		if((!first.after(start) ||
 				(d1<89 && d2 >= 89) ||
 				(d1<140 && d2 >= 140)||

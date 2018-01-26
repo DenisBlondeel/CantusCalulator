@@ -41,8 +41,10 @@ class CantusVerzameling {
 	public List<String> getPlaatsen()
 	{
 		List<String> ret = new ArrayList<>();
-		for (Cantus c : this.Cantussen)
+		for (Cantus c : this.Cantussen) {
 			ret.add(c.getPlaats());
+			System.out.println(c.getPlaats());
+		}
 		return ret;
 	}
 
@@ -62,10 +64,18 @@ class CantusVerzameling {
 
 	void verenigingPie()
     {
-        System.out.println("draw timeline");
+        System.out.println("draw verenigingen piechart");
         observer.drawPieChart(getVerenigingen());
     }
-	
+
+	void plaatsenPie()
+	{
+		System.out.println("draw zalen piechart");
+		observer.drawPieChart(getPlaatsen());
+	}
+
+
+
 	void setObserver(Observer observer)
 	{
 		this.observer = observer;

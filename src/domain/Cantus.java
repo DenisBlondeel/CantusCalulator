@@ -19,7 +19,8 @@ public class Cantus {
         this.datum = dateer(parts[0]);
         this.naam = parts[1];
         this.vereniging = parts[2].toLowerCase();
-        this.plaats = (parts.length>2?null:parts[3]);
+        this.plaats = (parts.length>3?parts[3]:null);
+        System.out.println(this );
     }
 
     private Calendar dateer(String s){
@@ -27,6 +28,9 @@ public class Cantus {
         DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         if(s.contains("/")){
             df = new SimpleDateFormat("dd/MM/yyyy");
+        }
+        if(s.length()>10){
+
         }
 
         try {
