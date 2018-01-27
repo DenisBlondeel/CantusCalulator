@@ -63,11 +63,11 @@ class ExcelReading {
 
                         if(row.getCell(j).getCellType() == row.getCell(j).CELL_TYPE_FORMULA) {
                             if(DateUtil.isCellDateFormatted(row.getCell(j))){
-                                System.out.println(row.getCell(j).getNumericCellValue() + " = " + row.getCell(j).getDateCellValue() + " = " + df.format(row.getCell(j).getDateCellValue()));
+                                //System.out.println(row.getCell(j).getNumericCellValue() + " = " + row.getCell(j).getDateCellValue() + " = " + df.format(row.getCell(j).getDateCellValue()));
                                 line.append(df.format(row.getCell(j).getDateCellValue())).append(",");
                             } else if(row.getCell(j).getCachedFormulaResultType()==row.getCell(j).CELL_TYPE_NUMERIC){
                                 line.append(row.getCell(j).getNumericCellValue()).append(",");
-                            } else{
+                            } else if(row.getCell(j).getCachedFormulaResultType()==row.getCell(j).CELL_TYPE_STRING){
                                 line.append(row.getCell(j).getRichStringCellValue()).append(",");
                             }
                         }

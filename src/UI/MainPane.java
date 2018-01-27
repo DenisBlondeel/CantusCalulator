@@ -53,8 +53,11 @@ public class MainPane extends JFrame implements Observer{
      */
     //@Override
     public void drawPieChart(List<String> dataset) {
-    	if(containsNotNull(dataset))
-        	dataset.sort(String::compareTo);
+    	if(containsNotNull(dataset)){
+			dataset.sort(String::compareTo);
+    	} else {
+    		return;
+		}
         frame = new JFrame(); //creates new frame with set dimensions
         frame.setSize(950, 400);
         frame.setTitle("Plot");
@@ -71,7 +74,20 @@ public class MainPane extends JFrame implements Observer{
 			}
         }
         ds.sortByValues(DESCENDING);
-        JFreeChart chart = ChartFactory.createPieChart(
+		String s;
+		int count = 0;
+		for(Object o: ds.getKeys()){
+			s = (String) o;
+			if(ds.getValue((Comparable) o).intValue()<=dataset.size()/100){
+				count++;
+				ds.remove((Comparable) o);
+			}
+
+		}
+		if (count!=0)
+			ds.setValue("Overige",count);
+
+		JFreeChart chart = ChartFactory.createPieChart(
                 "test",                  // chart title
                 ds,                // data
                 true,                   // include legend
@@ -213,7 +229,7 @@ public class MainPane extends JFrame implements Observer{
 			if(ds.contains(start)){
 				count+=frequency(ds,start);
 			}
-			System.out.println(start.getTime()+ " cumul is " + count);
+			//System.out.println(start.getTime()+ " cumul is " + count);
 			series.addOrUpdate(new Day(start.getTime()),count);
     		start.add(start.DATE,1);
 			preStart.add(preStart.DATE,1);
