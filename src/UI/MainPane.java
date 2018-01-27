@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JSplitPane;
+import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -27,11 +29,18 @@ public class MainPane extends JFrame implements Observer{
 	private static final long serialVersionUID = -9090407129402452701L;
 
 	private Controller controller;
-	private JFrame frame;
+	private JPanel panel;
+	private JSplitPane splitPaneH;
 
 	public MainPane(Controller controller)
 	{
 		this.controller = controller;
+		setTitle("Grafiekjes");
+		panel = new JPanel();
+		getContentPane().add(panel);
+		splitPaneH = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		panel.add(splitPaneH, BorderLayout.CENTER);
+
 	}
 
     /*
@@ -44,9 +53,7 @@ public class MainPane extends JFrame implements Observer{
     	} else {
     		return;
 		}
-        frame = new JFrame(); //creates new frame with set dimensions
-        frame.setSize(950, 400);
-        frame.setTitle("Plot");
+
 
         DefaultPieDataset ds = new DefaultPieDataset();
         for (String s: dataset){
@@ -72,18 +79,18 @@ public class MainPane extends JFrame implements Observer{
 			ds.setValue("Overige",count);
 
 		JFreeChart chart = ChartFactory.createPieChart(
-                "test",                  // chart title
+                "TAAAAAART",                  // chart title
                 ds,                // data
                 true,                   // include legend
                 true,
                 false
         );
-        ChartPanel panel = new ChartPanel(chart);
-        setContentPane(panel);
 
-        frame.setVisible(true);
-        this.pack();
-        this.setVisible(true);
+	splitPaneH.setLeftComponent(new ChartPanel(chart));
+
+	panel.setVisible(true);
+	this.pack();
+	this.setVisible(true);
     }
 
     private boolean containsNotNull(List<String> l){
@@ -93,29 +100,12 @@ public class MainPane extends JFrame implements Observer{
     	return false;
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 	/*
 	==========TIMELINE==========
 	==========TIMELINE==========
 	==========TIMELINE==========
 	==========TIMELINE==========
 	 */
-
-
-
-
 
 	/*
 	gaat er van uit dat dataset gesorteerd is, kan niet in de tijd reizen.
@@ -125,13 +115,9 @@ public class MainPane extends JFrame implements Observer{
 	{
 		dataset.sort(Calendar::compareTo);
 		genCumul(dataset,7);
-		frame = new JFrame(); //creates new frame with set dimensions
-		frame.setSize(950, 400);
-		frame.setTitle("Plot");
-
 
 		JFreeChart chart = ChartFactory.createTimeSeriesChart(
-				"cantustijdlijn test", // Chart
+				"Waar-liep-het-fout-lijn", // Chart
 				"Date", // X-Axis Label
 				"cantus", // Y-Axis Label
 				constructTSC(dataset));
@@ -147,15 +133,11 @@ public class MainPane extends JFrame implements Observer{
 		plot.setDataset(1, new TimeSeriesCollection(genCumul(dataset,7)));
 		plot.setDataset(2, new TimeSeriesCollection(genCumul(dataset,31)));
 
-        ChartPanel panel = new ChartPanel(chart);
-		setContentPane(panel);
+	splitPaneH.setRightComponent(new ChartPanel(chart));
 
-		frame.setVisible(true);
-
-		
-		this.pack();
-		this.setVisible(true);
-		
+	panel.setVisible(true);
+	this.pack();
+	this.setVisible(true);
 	}
 
     private TimeSeriesCollection constructTSC(List<Calendar> dataset){
