@@ -15,7 +15,7 @@ public class Controller {
 
     public Controller()
     {
-    	main = new MainPane(this);
+        main = new MainPane(this);
         facade = new Facade();
         screen = new StartScreen(this);
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
