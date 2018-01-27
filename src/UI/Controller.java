@@ -25,7 +25,6 @@ public class Controller {
 
     public void init()
     {
-    	
         screen.drawStartScreen();
         facade.drawTimeline();
         facade.drawPieChart();
@@ -34,6 +33,7 @@ public class Controller {
     public void init(String file) {
         getFacade().passFile(file);
         facade.drawTimeline();
+        facade.drawPieChart();
     }
 
     public Facade getFacade()

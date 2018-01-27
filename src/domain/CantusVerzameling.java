@@ -43,7 +43,7 @@ class CantusVerzameling {
 		List<String> ret = new ArrayList<>();
 		for (Cantus c : this.Cantussen) {
 			ret.add(c.getPlaats());
-			System.out.println(c.getPlaats());
+			//System.out.println(c.getPlaats());
 		}
 		return ret;
 	}

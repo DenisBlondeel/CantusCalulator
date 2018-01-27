@@ -20,7 +20,7 @@ public class Cantus {
         this.naam = parts[1];
         this.vereniging = parts[2].toLowerCase();
         this.plaats = (parts.length>3?parts[3]:null);
-        System.out.println(this );
+        //System.out.println(this );
     }
 
     private Calendar dateer(String s){
@@ -29,16 +29,13 @@ public class Cantus {
         if(s.contains("/")){
             df = new SimpleDateFormat("dd/MM/yyyy");
         }
-        if(s.length()>10){
-
-        }
 
         try {
             Date d = df.parse(s);
             Calendar date = Calendar.getInstance();
             date.setTime(d);
-            if(date.get(date.YEAR)<100)
-                date.set(date.YEAR,date.get(date.YEAR)+2000);
+            if(date.get(Calendar.YEAR)<100)
+                date.set(Calendar.YEAR,date.get(Calendar.YEAR)+2000);
 
             //System.out.println(date.getTime());
             return date;

@@ -51,28 +51,28 @@ class ExcelReading {
     }
     private static void echoAsCSV(Sheet sheet, OutputStreamWriter osw, boolean debugOn)throws IOException {
         print("sheet.getSheetName()"+sheet.getSheetName(),debugOn);
-        Row row;
+        Row r;
         print("sheet.getLastRowNum()="+sheet.getLastRowNum(),debugOn);
         DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         for (int i = 0; i <=sheet.getLastRowNum(); i++) {
-            row = sheet.getRow(i);
+            r = sheet.getRow(i);
             StringBuilder line= new StringBuilder();
-            if(row!=null){
-                for (int j = 0; j < row.getLastCellNum(); j++) {
-                    if(row.getCell(j) != null && !row.getCell(j).toString().equals("")){
+            if(r!=null){
+                for (int j = 0; j < r.getLastCellNum(); j++) {
+                    if(r.getCell(j) != null && !r.getCell(j).toString().equals("")){
 
-                        if(row.getCell(j).getCellType() == row.getCell(j).CELL_TYPE_FORMULA) {
-                            if(DateUtil.isCellDateFormatted(row.getCell(j))){
-                                //System.out.println(row.getCell(j).getNumericCellValue() + " = " + row.getCell(j).getDateCellValue() + " = " + df.format(row.getCell(j).getDateCellValue()));
-                                line.append(df.format(row.getCell(j).getDateCellValue())).append(",");
-                            } else if(row.getCell(j).getCachedFormulaResultType()==row.getCell(j).CELL_TYPE_NUMERIC){
-                                line.append(row.getCell(j).getNumericCellValue()).append(",");
-                            } else if(row.getCell(j).getCachedFormulaResultType()==row.getCell(j).CELL_TYPE_STRING){
-                                line.append(row.getCell(j).getRichStringCellValue()).append(",");
+                        if(r.getCell(j).getCellType() == Cell.CELL_TYPE_FORMULA) {
+                            //System.out.println(row.getCell(j).getNumericCellValue() + " = " + row.getCell(j).getDateCellValue() + " = " + df.format(row.getCell(j).getDateCellValue()));
+                            if(DateUtil.isCellDateFormatted(r.getCell(j)))
+                                line.append(df.format(r.getCell(j).getDateCellValue())).append(",");
+                            else if(r.getCell(j).getCachedFormulaResultType()==Cell.CELL_TYPE_NUMERIC){
+                                line.append(r.getCell(j).getNumericCellValue()).append(",");
+                            } else if(r.getCell(j).getCachedFormulaResultType()==Cell.CELL_TYPE_STRING){
+                                line.append(r.getCell(j).getRichStringCellValue()).append(",");
                             }
                         }
                         else{
-                            line.append(row.getCell(j)).append(",");
+                            line.append(r.getCell(j)).append(",");
                         }
 
 
@@ -90,21 +90,6 @@ class ExcelReading {
 
     }
 
-
-
-    private static String getFileName(File file) {
-        String fileName = file.getName();
-        if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
-            return fileName.substring(0,fileName.lastIndexOf(".")+1);
-        else return "";
-    }
-
-    private static String getFileExtension(File file) {
-        String fileName = file.getName();
-        if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
-            return fileName.substring(fileName.lastIndexOf(".")+1);
-        else return "";
-    }
 
     private static void print(String str, boolean debugOn){
         if(debugOn){

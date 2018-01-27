@@ -54,9 +54,9 @@ public class StartScreen extends JFrame {
 	      JLabel nameFile = new JLabel(filename.getText() + dir.getText());
 	      pane.add(nameFile);
 	      controller.getFacade().passFile(dir.getText() + "/" + filename.getText());
-		pane.setVisible(true);
-		this.pack();
-		this.setVisible(true);
+		//pane.setVisible(true);
+		//this.pack();
+		//this.setVisible(true);
 	
 	}
 }

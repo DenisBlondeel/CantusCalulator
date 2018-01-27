@@ -1,22 +1,10 @@
 package UI;
 
 import java.awt.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.axis.DateAxis;
-
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -25,8 +13,6 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.chart.axis.NumberAxis;
 
 
 import static java.util.Collections.frequency;
@@ -35,11 +21,11 @@ import static org.jfree.util.SortOrder.DESCENDING;
 
 public class MainPane extends JFrame implements Observer{
 
-	int semestercount = 1;
-	int summercount = 1;
-	int wintercount = 1;
+	private int semestercount = 1;
+	private int summercount = 1;
+	private int wintercount = 1;
 	private static final long serialVersionUID = -9090407129402452701L;
-	
+
 	private Controller controller;
 	private JFrame frame;
 
@@ -74,10 +60,8 @@ public class MainPane extends JFrame implements Observer{
 			}
         }
         ds.sortByValues(DESCENDING);
-		String s;
 		int count = 0;
 		for(Object o: ds.getKeys()){
-			s = (String) o;
 			if(ds.getValue((Comparable) o).intValue()<=dataset.size()/100){
 				count++;
 				ds.remove((Comparable) o);
@@ -98,14 +82,11 @@ public class MainPane extends JFrame implements Observer{
         setContentPane(panel);
 
         frame.setVisible(true);
-
-        DateAxis ax;
-
         this.pack();
         this.setVisible(true);
     }
 
-    public boolean containsNotNull(List<String> l){
+    private boolean containsNotNull(List<String> l){
     	for(String s: l)
     		if(s != null && s.length()>0)
     			return true;
@@ -170,23 +151,19 @@ public class MainPane extends JFrame implements Observer{
 		setContentPane(panel);
 
 		frame.setVisible(true);
-		
-		DateAxis ax;
+
 		
 		this.pack();
 		this.setVisible(true);
 		
 	}
 
-    public TimeSeriesCollection constructTSC(List<Calendar> dataset){
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+    private TimeSeriesCollection constructTSC(List<Calendar> dataset){
         TimeSeriesCollection tsc = new TimeSeriesCollection();
         TimeSeries series = new TimeSeries("Series1");
         int i = 0;
 
         Calendar previous,c;
-        //Calendar c = dataset.get(1);
-        //System.out.println(series.getKey());
         while(i < dataset.size()){
             c = dataset.get(i);
 
@@ -202,8 +179,6 @@ public class MainPane extends JFrame implements Observer{
                     series.addOrUpdate(new Day(c.getTime()),i+1);
                     tsc.addSeries(series);
                     series = new TimeSeries(p.name().toLowerCase() + getCount(p));
-                    //System.out.println("diff: " + df.format(c.getTime())+ " start " + p.name().toLowerCase() + getCount(p));
-					//System.out.println( df.format(c.getTime()) + "startte " + p.name().toLowerCase() + getCount(p));
 					addCount(p);
                 }
             }
@@ -211,17 +186,16 @@ public class MainPane extends JFrame implements Observer{
             i++;
 
         }
-        //System.out.println(series.getItemCount());
         tsc.addSeries(series);
         return tsc;
     }
 
-    public TimeSeries genCumul(List<Calendar> ds, int i){
+    private TimeSeries genCumul(List<Calendar> ds, int i){
 		TimeSeries series = new TimeSeries("Cumul" + i);
     	Calendar start = (Calendar) ds.get(0).clone();
     	Calendar end = (Calendar) ds.get(ds.size()-1).clone();
     	Calendar preStart= (Calendar) start.clone();
-    	preStart.add(preStart.DATE,-i);
+    	preStart.add(Calendar.DATE,-i);
     	int count=0;
     	while(start.before(end)){
     		if(ds.contains(preStart))
@@ -231,8 +205,8 @@ public class MainPane extends JFrame implements Observer{
 			}
 			//System.out.println(start.getTime()+ " cumul is " + count);
 			series.addOrUpdate(new Day(start.getTime()),count);
-    		start.add(start.DATE,1);
-			preStart.add(preStart.DATE,1);
+    		start.add(Calendar.DATE,1);
+			preStart.add(Calendar.DATE,1);
 		}
 
     	return series;
@@ -242,12 +216,10 @@ public class MainPane extends JFrame implements Observer{
 		SEMESTER, SUMMER, WINTER
 	}
 
-	public Period getPeriod(Calendar c){
+	private Period getPeriod(Calendar c){
 
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		Calendar c2 = getStartYear(c);
 		Period p;
-		//System.out.println(df.format(c.getTime()) + " was " + daysBetween(c2,c) + " after start of semester " + df.format(c2.getTime()));
 		if (daysBetween(c2,c) < 89){
 			p = Period.SEMESTER;
 		}else if (daysBetween(c2,c) < 140){
@@ -257,7 +229,6 @@ public class MainPane extends JFrame implements Observer{
 		}else {
 			p = Period.SUMMER;
 		}
-		//System.out.println(df.format(c.getTime()) + " was in de " + p.name().toLowerCase());
 		return p;
 	}
 
@@ -265,13 +236,13 @@ public class MainPane extends JFrame implements Observer{
 berekend de start van het academiejaar voor datum c
 de eerste maandag na de 20ste september die c voorafgaat
  */
-	public Calendar getStartYear(Calendar c){
+	private Calendar getStartYear(Calendar c){
 		Calendar c2 = Calendar.getInstance();
-		c2.set(c.get(c.YEAR),8,20);
+		c2.set(c.get(Calendar.YEAR),Calendar.SEPTEMBER,20);
 		//========================System.out.println(df.format(c2.getTime()));
 		nextMonday(c2);
 		if(c.before(c2)) {
-			c2.set(c.get(c.YEAR) - 1, 8, 20);
+			c2.set(c.get(Calendar.YEAR) - 1, Calendar.SEPTEMBER, 20);
 			nextMonday(c2);
 		}
 		return c2;
@@ -279,11 +250,11 @@ de eerste maandag na de 20ste september die c voorafgaat
 
 
 	private void nextMonday(Calendar c){
-		while(c.get(c.DAY_OF_WEEK)!=2)
-			c.add(c.DATE,1);
+		while(c.get(Calendar.DAY_OF_WEEK)!=Calendar.MONDAY)
+			c.add(Calendar.DATE,1);
 	}
 
-	public static long daysBetween(Calendar startDate, Calendar endDate) {
+	private static long daysBetween(Calendar startDate, Calendar endDate) {
 		long end = endDate.getTimeInMillis();
 		long start = startDate.getTimeInMillis();
 		return (end - start)/(60*60*24*1000) +1;
@@ -300,21 +271,10 @@ de eerste maandag na de 20ste september die c voorafgaat
     semester 2: 140 dagen na start .. 191 dagen na start
     zomer: 191 dagen na start .. volgende academiejaar.
      */
-	public boolean diffPeriod(Calendar first, Calendar second){
+	private boolean diffPeriod(Calendar first, Calendar second){
 		Calendar start = getStartYear(second);
 		long d1 = daysBetween(start,first);
 		long d2 = daysBetween(start,second);
-
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		//System.out.println(df.format(start.getTime()) +" + "+ d2 + " = second =" +  df.format(second.getTime()));
-		if((!first.after(start) ||
-				(d1<89 && d2 >= 89) ||
-				(d1<140 && d2 >= 140)||
-				(d1<243 && d2 >= 243))){
-
-			//System.out.println(df.format(start.getTime()) +" + "+ d1 + " = first =" +  df.format(first.getTime()));
-			//System.out.println(df.format(start.getTime()) +" + "+ d2 + " = second =" +  df.format(second.getTime()));
-		}
 		return (!first.after(start) ||
 				(d1<89 && d2 >= 89) ||
 				(d1<140 && d2 >= 140)||
@@ -322,7 +282,7 @@ de eerste maandag na de 20ste september die c voorafgaat
 		}
 
 
-	public int getCount(Period p){
+	private int getCount(Period p){
 		if(p.equals(Period.SEMESTER))
 			return semestercount;
 		if(p.equals(Period.SUMMER))
@@ -330,7 +290,7 @@ de eerste maandag na de 20ste september die c voorafgaat
 		return wintercount;
 	}
 
-	public void addCount(Period p){
+	private void addCount(Period p){
 		if(p.equals(Period.SEMESTER)) {
 			//System.out.println("add semester count");
 			semestercount++;
