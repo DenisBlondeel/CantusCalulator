@@ -47,14 +47,19 @@ public class StartScreen extends JFrame {
         JMenuItem openMenuItem = new JMenuItem("Open");
         openMenuItem.setActionCommand("Open");
 
+        JMenuItem drawMenuItem = new JMenuItem("Draw");
+        drawMenuItem.setActionCommand("Draw");
+
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.setActionCommand("Exit");
  
         openMenuItem.addActionListener(new OpenFile());
+        drawMenuItem.addActionListener(new DrawGraphs());
         exitMenuItem.addActionListener(new Exit());
 
         //add menu items to menus
         fileMenu.add(openMenuItem);
+        fileMenu.add(drawMenuItem);
         fileMenu.addSeparator();
         fileMenu.add(exitMenuItem);
 
