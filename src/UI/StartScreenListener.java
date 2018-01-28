@@ -13,7 +13,7 @@ public class StartScreenListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            System.out.print("ijzfojzpfoijqepjfpifj");
+            //TODO
         }
 
 }

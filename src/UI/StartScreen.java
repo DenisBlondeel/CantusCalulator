@@ -49,11 +49,9 @@ public class StartScreen extends JFrame {
 
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.setActionCommand("Exit");
-
-        MenuItemListener menuItemListener = new MenuItemListener();
-        
-        openMenuItem.addActionListener(menuItemListener);
-        exitMenuItem.addActionListener(menuItemListener);
+ 
+        openMenuItem.addActionListener(new OpenFile());
+        exitMenuItem.addActionListener(new Exit());
 
         //add menu items to menus
         fileMenu.add(openMenuItem);
@@ -69,13 +67,25 @@ public class StartScreen extends JFrame {
         mainFrame.setVisible(true);
     }
 
-    class MenuItemListener implements ActionListener {
+    class OpenFile implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             getFile();
+        }
+    }
+
+    class DrawGraphs implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
             controller.getFacade().drawPieChart();
             controller.getFacade().drawTimeline();
         }
     }
+
+    class Exit implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+        System.exit(0);
+        }
+    }
+
 
     public void getFile() {
         pane = new JPanel();
