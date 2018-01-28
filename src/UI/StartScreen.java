@@ -95,8 +95,6 @@ public class StartScreen extends JFrame {
     public void getFile() {
         pane = new JPanel();
         super.setContentPane(pane);
-        JLabel name = new JLabel("Hi !");
-        pane.add(name);
 
         Path currentRelativePath = Paths.get("");
         Path s = currentRelativePath.toAbsolutePath();
@@ -114,8 +112,12 @@ public class StartScreen extends JFrame {
             dir.setText("");
         }
         JLabel nameFile = new JLabel(filename.getText() + dir.getText());
-        pane.add(nameFile);
         controller.getFacade().passFile(dir.getText() + "/" + filename.getText());
+        
+        JLabel name = new JLabel("Je bestand op de volgende locatie is ingeladen! Je kan de grafieken bekijken via File -> Draw!");
+        pane.add(name);
+        pane.add(nameFile);
+        
         pane.setVisible(true);
         this.pack();
         this.setVisible(true);
