@@ -16,9 +16,6 @@ import java.lang.Object;
 import java.awt.event.*;
 
 import javax.swing.JComponent;
-import java.awt.Container;
-import java.awt.Component;
-import java.lang.Object;
 
 public class StartScreen extends JFrame {
 
@@ -75,6 +72,8 @@ public class StartScreen extends JFrame {
     class MenuItemListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             getFile();
+            controller.getFacade().drawPieChart();
+            controller.getFacade().drawTimeline();
         }
     }
 
