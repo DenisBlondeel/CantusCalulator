@@ -24,25 +24,25 @@ import static org.jfree.util.SortOrder.DESCENDING;
 
 public class MainPane extends JFrame implements Observer{
 
-	private int semestercount = 1;
-	private int summercount = 1;
-	private int wintercount = 1;
-	private static final long serialVersionUID = -9090407129402452701L;
+    private int semestercount = 1;
+    private int summercount = 1;
+    private int wintercount = 1;
+    private static final long serialVersionUID = -9090407129402452701L;
 
-	private Controller controller;
-	private JPanel panel;
-	private JSplitPane splitPaneH;
+    private Controller controller;
+    private JPanel panel;
+    private JSplitPane splitPaneH;
 
-	public MainPane(Controller controller)
-	{
-		this.controller = controller;
-		setTitle("Grafiekjes");
-		panel = new JPanel();
-		getContentPane().add(panel);
-		splitPaneH = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		panel.add(splitPaneH, BorderLayout.CENTER);
+    public MainPane(Controller controller)
+    {
+        this.controller = controller;
+        setTitle("Grafiekjes");
+        panel = new JPanel();
+        getContentPane().add(panel);
+        splitPaneH = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        panel.add(splitPaneH, BorderLayout.CENTER);
 
-	}
+    }
 
     /*
     gaat er van uit dat dataset gesorteerd is, kan niet in de tijd reizen.
