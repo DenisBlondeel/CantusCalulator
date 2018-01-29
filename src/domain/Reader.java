@@ -16,6 +16,11 @@ public class Reader {
             System.out.println("xls(x)");
             ExcelReading.convert(new File(fileName),fileName.substring(0,fileName.lastIndexOf(".") + 1) + "csv",false);
             fileName = fileName.substring(0,fileName.lastIndexOf(".") + 1) + "csv";
+        } else if (fileName.substring(fileName.lastIndexOf(".") + 1).contains("ods")){
+            System.out.println("ODF");
+            OdsReading.convert(new File(fileName),fileName.substring(0,fileName.lastIndexOf(".") + 1) + "csv",false);
+            fileName = fileName.substring(0,fileName.lastIndexOf(".") + 1) + "csv";
+            System.out.println(fileName);
         }
         try {
             this.sc = new Scanner(new File(fileName));
