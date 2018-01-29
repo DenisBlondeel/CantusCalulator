@@ -11,6 +11,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
@@ -127,17 +128,29 @@ public class MainPane extends JFrame implements Observer{
         plot.setDomainGridlinePaint(new Color(155,155,155));
         plot.setRangeGridlinePaint(new Color(155,155,155));
 
+
         for (int i = 0; i < plot.getSeriesCount(); i++) {
             plot.getRenderer().setSeriesStroke(i,new BasicStroke(2.0f));
         }
-		plot.setDataset(1, new TimeSeriesCollection(genCumul(dataset,7)));
-		plot.setDataset(2, new TimeSeriesCollection(genCumul(dataset,31)));
+        plot.setDataset(1, new TimeSeriesCollection(genCumul(dataset,7)));
+        plot.setDataset(2, new TimeSeriesCollection(genCumul(dataset,31)));
 
-	splitPaneH.setRightComponent(new ChartPanel(chart));
+        // Renderer voor cumul7
+        XYLineAndShapeRenderer r1 = new XYLineAndShapeRenderer(true,false);
+        r1.setPaint(new Color(0,0,255));
 
-	panel.setVisible(true);
-	this.pack();
-	this.setVisible(true);
+        // Renderer voor cumul31
+        XYLineAndShapeRenderer r2 = new XYLineAndShapeRenderer(true,false);
+        r2.setPaint(new Color(0,255,0));
+
+        plot.setRenderer(1,r1);
+        plot.setRenderer(2,r2);
+
+        splitPaneH.setRightComponent(new ChartPanel(chart));
+
+        panel.setVisible(true);
+        this.pack();
+        this.setVisible(true);
 	}
 
     private TimeSeriesCollection constructTSC(List<Calendar> dataset){
