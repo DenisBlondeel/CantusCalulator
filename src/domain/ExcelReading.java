@@ -62,11 +62,12 @@ class ExcelReading {
                     if(r.getCell(j) != null && !r.getCell(j).toString().equals("")){
 
                         if(r.getCell(j).getCellType() == Cell.CELL_TYPE_FORMULA) {
-                            //System.out.println(row.getCell(j).getNumericCellValue() + " = " + row.getCell(j).getDateCellValue() + " = " + df.format(row.getCell(j).getDateCellValue()));
-                            if(DateUtil.isCellDateFormatted(r.getCell(j)))
-                                line.append(df.format(r.getCell(j).getDateCellValue())).append(",");
-                            else if(r.getCell(j).getCachedFormulaResultType()==Cell.CELL_TYPE_NUMERIC){
-                                line.append(r.getCell(j).getNumericCellValue()).append(",");
+                            if(r.getCell(j).getCachedFormulaResultType()==Cell.CELL_TYPE_NUMERIC){
+                                if(DateUtil.isCellDateFormatted(r.getCell(j))){ //dit kan niet voor de CELL TYPE NUMERIC, crasht als het een STRING formula is
+                                    line.append(df.format(r.getCell(j).getDateCellValue())).append(",");
+                                    System.out.println(r.getCell(j).getNumericCellValue() + " = " + r.getCell(j).getDateCellValue() + " = " + df.format(r.getCell(j).getDateCellValue()));
+                                } else {
+                                    line.append(r.getCell(j).getNumericCellValue()).append(",");}
                             } else if(r.getCell(j).getCachedFormulaResultType()==Cell.CELL_TYPE_STRING){
                                 line.append(r.getCell(j).getRichStringCellValue()).append(",");
                             }
