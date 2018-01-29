@@ -15,6 +15,12 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
  * Created by bart on 29/01/18.
  */
 public class OdsReading {
+    /*
+    ODS bestanden zijn minder variabel,
+    Geen lege lijnen,
+    data moet in de eerste 4 kolommen staan,
+    nog geen formules voorlopig.
+     */
     static void convert(File inputFile,String target, boolean debugOn){
             Sheet sheet;
             try {
