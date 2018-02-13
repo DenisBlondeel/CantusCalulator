@@ -32,6 +32,7 @@ public class Controller {
 
     public void init(String file) {
         getFacade().passFile(file);
+        facade.drawCantusTable();
         //facade.drawTimeline();
         //facade.drawPieChart();
     }

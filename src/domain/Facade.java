@@ -24,7 +24,9 @@ public class Facade {
 		CV.timeline();
 	}
 
-	public void drawPieChart(){CV.verenigingPie();}//;CV.plaatsenPie();}
+	public void drawPieChart(){CV.verenigingPie();CV.plaatsenPie();}
+
+	public void drawCantusTable(){CV.cantusTable();	}
 	
 	public void addObserver(Observer pane)
 	{

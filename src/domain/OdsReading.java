@@ -36,7 +36,7 @@ public class OdsReading {
                 System.out.println("Rows :"+nRowCount);
                 System.out.println("Cols :"+nColCount);
                 //Iterating through each row of the selected sheet
-                MutableCell cell = null;
+                MutableCell cell;
                 DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
 
                 for(int nRowIndex = 0; nRowIndex < nRowCount; nRowIndex++)

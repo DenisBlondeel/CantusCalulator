@@ -12,7 +12,7 @@ public class CantusCalculator {
         Controller controller = new Controller();
         //StartScreen startscreen = new StartScreen(controller);
         //startscreen.drawStartScreen();
-        if (args.length == 0)
+        if (args.length < 1)
             controller.init();
         else
             controller.init(args[0]);

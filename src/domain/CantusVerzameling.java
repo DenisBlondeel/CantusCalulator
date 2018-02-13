@@ -74,6 +74,12 @@ class CantusVerzameling {
 		observer.drawPieChart(getPlaatsen());
 	}
 
+	void cantusTable()
+	{
+		System.out.println("draw cantus tabel");
+		observer.drawCantusTable(this.Cantussen);
+	}
+
 
 
 	void setObserver(Observer observer)

@@ -1,12 +1,16 @@
 package UI;
 
 import java.awt.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import javax.swing.JPanel;
+
+import domain.Cantus;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -16,6 +20,10 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+import javax.swing.JScrollPane;
 
 
 import static java.util.Collections.frequency;
@@ -41,8 +49,31 @@ public class MainPane extends JFrame implements Observer{
         getContentPane().add(panel);
         splitPaneH = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         panel.add(splitPaneH, BorderLayout.CENTER);
-
     }
+
+
+    public void drawCantusTable(List<Cantus> cantussen){
+		DefaultTableModel model = new DefaultTableModel();
+		System.out.println("joepie");
+		//Object[] column = {"Datum", "Cantus","Vereniging","plaats"};
+		model.addColumn("Datum");
+		model.addColumn("Cantus");
+		model.addColumn("Vereniging");
+		model.addColumn("plaats");
+		cantussen.sort(Cantus::compareTo);
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		for(Cantus cantus : cantussen){
+			Object[] array = {df.format(cantus.datum.getTime()), cantus.naam, cantus.vereniging,cantus.plaats};
+			model.addRow(array);
+		}
+
+		JTable table = new JTable(model);
+		splitPaneH.setRightComponent(new JScrollPane(table));
+
+		panel.setVisible(true);
+		this.pack();
+		this.setVisible(true);
+	}
 
     /*
     gaat er van uit dat dataset gesorteerd is, kan niet in de tijd reizen.

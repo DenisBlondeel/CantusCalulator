@@ -6,13 +6,13 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-public class Cantus {
+public class Cantus implements Comparable<Cantus> {
 
 
-    private Calendar datum;
-    private String vereniging;
-    private String naam;
-    private String plaats;
+    public Calendar datum;
+    public String vereniging;
+    public String naam;
+    public String plaats;
 	
 	public Cantus(String str){
         String[] parts = str.split(",");
@@ -21,6 +21,11 @@ public class Cantus {
         this.vereniging = parts[2].toLowerCase();
         this.plaats = (parts.length>3?parts[3]:null);
         //System.out.println(this );
+    }
+
+    @Override
+    public int compareTo(Cantus cantus) {
+        return this.datum.compareTo(cantus.datum);
     }
 
     private Calendar dateer(String s){
