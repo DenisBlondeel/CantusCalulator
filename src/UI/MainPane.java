@@ -48,7 +48,7 @@ public class MainPane extends JFrame implements Observer{
         panel = new JPanel();
         getContentPane().add(panel);
         splitPaneH = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        panel.add(splitPaneH, BorderLayout.CENTER);
+        panel.add(splitPaneH, BorderLayout.EAST);
     }
 
 
@@ -68,8 +68,13 @@ public class MainPane extends JFrame implements Observer{
 		}
 
 		JTable table = new JTable(model);
-		splitPaneH.setRightComponent(new JScrollPane(table));
 
+		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		JScrollPane jtable = new JScrollPane(table);
+		table.setPreferredScrollableViewportSize(table.getPreferredSize());
+		table.setFillsViewportHeight(true);
+		panel.add(jtable, BorderLayout.EAST);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS	);
 		panel.setVisible(true);
 		this.pack();
 		this.setVisible(true);
