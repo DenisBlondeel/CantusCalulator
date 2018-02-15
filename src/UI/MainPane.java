@@ -11,6 +11,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JPanel;
 
 import domain.Cantus;
+import domain.CantusVerzameling;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -43,7 +44,8 @@ public class MainPane extends JFrame implements Observer{
 
     public MainPane(Controller controller)
     {
-        this.controller = controller;
+		System.out.println("draw mainpain");
+		this.controller = controller;
         setTitle("Grafiekjes");
         panel = new JPanel();
         getContentPane().add(panel);
@@ -51,8 +53,37 @@ public class MainPane extends JFrame implements Observer{
         panel.add(splitPaneH, BorderLayout.EAST);
     }
 
+    public void drawCompleet(CantusVerzameling CV){
+		//panel.setLayout(null);
+		//panel.setSize();
+		JScrollPane tabel = makeScrollTable(CV.getCantussen());
+		ChartPanel vereniggingenchart = new ChartPanel(makePieChart(CV.getVerenigingen()));
+		ChartPanel plaatsenchart =  new ChartPanel(makePieChart(CV.getPlaatsen()));
+		ChartPanel timechart =  new ChartPanel(makeTimeLine(CV.getData()));
+		panel.add(tabel,BorderLayout.EAST);
+		panel.add(vereniggingenchart);
+		panel.add(plaatsenchart);
+		panel.add(timechart);
+		tabel.setBounds(panel.getWidth()*2/3,panel.getHeight()*2/3,panel.getWidth(),panel.getHeight());
+
+		setVisible(true);
+	}
+
+
 
     public void drawCantusTable(List<Cantus> cantussen){
+
+		JScrollPane jtable = makeScrollTable(cantussen);
+		//table.setPreferredScrollableViewportSize(table.getPreferredSize());
+		//table.setFillsViewportHeight(true);
+		panel.add(jtable);
+		//table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS	);
+		panel.setVisible(true);
+		this.pack();
+		this.setVisible(true);
+	}
+
+	public JScrollPane makeScrollTable(List<Cantus> cantussen){
 		DefaultTableModel model = new DefaultTableModel();
 		System.out.println("joepie");
 		//Object[] column = {"Datum", "Cantus","Vereniging","plaats"};
@@ -70,14 +101,7 @@ public class MainPane extends JFrame implements Observer{
 		JTable table = new JTable(model);
 
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		JScrollPane jtable = new JScrollPane(table);
-		table.setPreferredScrollableViewportSize(table.getPreferredSize());
-		table.setFillsViewportHeight(true);
-		panel.add(jtable, BorderLayout.EAST);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS	);
-		panel.setVisible(true);
-		this.pack();
-		this.setVisible(true);
+		return new JScrollPane(table);
 	}
 
     /*
@@ -85,15 +109,33 @@ public class MainPane extends JFrame implements Observer{
      */
     //@Override
     public void drawPieChart(List<String> dataset) {
-    	if(containsNotNull(dataset)){
+
+		JFreeChart chart = makePieChart(dataset);
+
+		splitPaneH.setLeftComponent(new ChartPanel(chart));
+
+		panel.setVisible(true);
+		this.pack();
+		this.setVisible(true);
+    }
+
+    private boolean containsNotNull(List<String> l){
+    	for(String s: l)
+    		if(s != null && s.length()>0)
+    			return true;
+    	return false;
+	}
+
+	public JFreeChart makePieChart(List<String> dataset){
+		if(containsNotNull(dataset)){
 			dataset.sort(String::compareTo);
-    	} else {
-    		return;
+		} else {
+			return null;
 		}
 
 
-        DefaultPieDataset ds = new DefaultPieDataset();
-        for (String s: dataset){
+		DefaultPieDataset ds = new DefaultPieDataset();
+		for (String s: dataset){
 			if(s != null && s.length()>0) {
 				//System.out.println("string: " + s);
 				if (ds.getKeys().contains(s)) {
@@ -102,8 +144,8 @@ public class MainPane extends JFrame implements Observer{
 				} else
 					ds.setValue(s, 1);
 			}
-        }
-        ds.sortByValues(DESCENDING);
+		}
+		ds.sortByValues(DESCENDING);
 		int count = 0;
 		for(Object o: ds.getKeys()){
 			if(ds.getValue((Comparable) o).intValue()<=dataset.size()/100){
@@ -115,27 +157,14 @@ public class MainPane extends JFrame implements Observer{
 		if (count!=0)
 			ds.setValue("Overige",count);
 
-		JFreeChart chart = ChartFactory.createPieChart(
-                "TAAAAAART",                  // chart title
-                ds,                // data
-                true,                   // include legend
-                true,
-                false
-        );
-
-	splitPaneH.setLeftComponent(new ChartPanel(chart));
-
-	panel.setVisible(true);
-	this.pack();
-	this.setVisible(true);
-    }
-
-    private boolean containsNotNull(List<String> l){
-    	for(String s: l)
-    		if(s != null && s.length()>0)
-    			return true;
-    	return false;
+		return ChartFactory.createPieChart(
+				"TAAAAAART",                  // chart title
+				ds,                // data
+				true,                   // include legend
+				true,
+				false);
 	}
+
 
 	/*
 	==========TIMELINE==========
@@ -150,6 +179,16 @@ public class MainPane extends JFrame implements Observer{
 	@Override
 	public void drawTimeline(List<Calendar> dataset)
 	{
+
+
+        splitPaneH.setRightComponent(new ChartPanel(makeTimeLine(dataset)));
+
+        panel.setVisible(true);
+        this.pack();
+        this.setVisible(true);
+	}
+
+	public JFreeChart makeTimeLine(List<Calendar> dataset){
 		dataset.sort(Calendar::compareTo);
 		genCumul(dataset,7);
 
@@ -161,32 +200,27 @@ public class MainPane extends JFrame implements Observer{
 
 		XYPlot plot = (XYPlot)chart.getPlot();
 		plot.setBackgroundPaint(new Color(255,255,255));
-        plot.setDomainGridlinePaint(new Color(155,155,155));
-        plot.setRangeGridlinePaint(new Color(155,155,155));
+		plot.setDomainGridlinePaint(new Color(155,155,155));
+		plot.setRangeGridlinePaint(new Color(155,155,155));
 
 
-        for (int i = 0; i < plot.getSeriesCount(); i++) {
-            plot.getRenderer().setSeriesStroke(i,new BasicStroke(2.0f));
-        }
-        plot.setDataset(1, new TimeSeriesCollection(genCumul(dataset,7)));
-        plot.setDataset(2, new TimeSeriesCollection(genCumul(dataset,31)));
+		for (int i = 0; i < plot.getSeriesCount(); i++) {
+			plot.getRenderer().setSeriesStroke(i,new BasicStroke(2.0f));
+		}
+		plot.setDataset(1, new TimeSeriesCollection(genCumul(dataset,7)));
+		plot.setDataset(2, new TimeSeriesCollection(genCumul(dataset,31)));
 
-        // Renderer voor cumul7
-        XYLineAndShapeRenderer r1 = new XYLineAndShapeRenderer(true,false);
-        r1.setPaint(new Color(0,0,255));
+		// Renderer voor cumul7
+		XYLineAndShapeRenderer r1 = new XYLineAndShapeRenderer(true,false);
+		r1.setPaint(new Color(0,0,255));
 
-        // Renderer voor cumul31
-        XYLineAndShapeRenderer r2 = new XYLineAndShapeRenderer(true,false);
-        r2.setPaint(new Color(0,255,0));
+		// Renderer voor cumul31
+		XYLineAndShapeRenderer r2 = new XYLineAndShapeRenderer(true,false);
+		r2.setPaint(new Color(0,255,0));
 
-        plot.setRenderer(1,r1);
-        plot.setRenderer(2,r2);
-
-        splitPaneH.setRightComponent(new ChartPanel(chart));
-
-        panel.setVisible(true);
-        this.pack();
-        this.setVisible(true);
+		plot.setRenderer(1,r1);
+		plot.setRenderer(2,r2);
+		return chart;
 	}
 
     private TimeSeriesCollection constructTSC(List<Calendar> dataset){

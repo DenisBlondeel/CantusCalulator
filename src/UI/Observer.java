@@ -1,6 +1,7 @@
 package UI;
 
 import domain.Cantus;
+import domain.CantusVerzameling;
 
 import java.util.Calendar;
 import java.util.List;
@@ -13,5 +14,6 @@ public interface Observer
 
 	void drawCantusTable(List<Cantus> dataset);
 
+	void drawCompleet(CantusVerzameling CV);
 
 }

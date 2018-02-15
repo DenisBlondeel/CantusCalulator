@@ -33,4 +33,6 @@ public class Facade {
 		CV.setObserver(pane);
 	}
 
+	public void drawCompleet(){CV.drawCompleet();};
+
 }

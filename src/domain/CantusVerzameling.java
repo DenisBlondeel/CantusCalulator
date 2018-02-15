@@ -3,7 +3,11 @@ package domain;
 import java.util.*;
 import UI.Observer;
 
-class CantusVerzameling {
+public class CantusVerzameling {
+	public List<Cantus> getCantussen() {
+		return Cantussen;
+	}
+
 	private List<Cantus> Cantussen;
 	private Observer observer;
 	
@@ -30,7 +34,7 @@ class CantusVerzameling {
 
 	}
 
-	private List<Calendar> getData()
+	public List<Calendar> getData()
 	{
 		List<Calendar> ret = new ArrayList<>();
 		for (Cantus c : this.Cantussen)
@@ -80,6 +84,11 @@ class CantusVerzameling {
 		observer.drawCantusTable(this.Cantussen);
 	}
 
+
+	void drawCompleet(){
+		System.out.println("draw all");
+		observer.drawCompleet(this);
+	}
 
 
 	void setObserver(Observer observer)

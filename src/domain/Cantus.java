@@ -19,8 +19,9 @@ public class Cantus implements Comparable<Cantus> {
         this.datum = dateer(parts[0]);
         this.naam = parts[1];
         this.vereniging = parts[2].toLowerCase();
+        System.out.println(str);
         this.plaats = (parts.length>3?parts[3]:null);
-        //System.out.println(this );
+        System.out.println(this );
     }
 
     @Override
@@ -53,7 +54,7 @@ public class Cantus implements Comparable<Cantus> {
 
     public String toString(){
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		return "Cantus: " + naam + " op " + df.format(datum.getTime()) + " bij " + vereniging;
+		return "Cantus: " + naam + " op " + df.format(datum.getTime()) + " bij " + vereniging + " in " + plaats;
 	}
 
 
