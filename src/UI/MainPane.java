@@ -57,14 +57,22 @@ public class MainPane extends JFrame implements Observer{
 		//panel.setLayout(null);
 		//panel.setSize();
 		JScrollPane tabel = makeScrollTable(CV.getCantussen());
-		ChartPanel vereniggingenchart = new ChartPanel(makePieChart(CV.getVerenigingen()));
-		ChartPanel plaatsenchart =  new ChartPanel(makePieChart(CV.getPlaatsen()));
+		
+		JFreeChart vereniggingenchart = makePieChart(CV.getVerenigingen());	
+		vereniggingenchart.setTitle("Vereniggingen");
+		ChartPanel vereniggingenchartpanel = new ChartPanel(vereniggingenchart);
+		
+		JFreeChart plaatsenchart = makePieChart(CV.getPlaatsen());
+		plaatsenchart.setTitle("Locaties");
+		ChartPanel plaatsenchartpanel =  new ChartPanel(plaatsenchart);
+		
+		
 		ChartPanel timechart =  new ChartPanel(makeTimeLine(CV.getData()));
 		panel.add(tabel,BorderLayout.EAST);
-		panel.add(vereniggingenchart);
-		panel.add(plaatsenchart);
+		panel.add(vereniggingenchartpanel);
+		panel.add(plaatsenchartpanel);
 		panel.add(timechart);
-		tabel.setBounds(panel.getWidth()*2/3,panel.getHeight()*2/3,panel.getWidth(),panel.getHeight());
+		//tabel.setBounds(panel.getWidth()*2/3,panel.getHeight()*2/3,panel.getWidth(),panel.getHeight());
 
 		setVisible(true);
 	}
