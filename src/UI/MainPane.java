@@ -67,39 +67,43 @@ public class MainPane extends JFrame implements Observer{
 		JFreeChart vereniggingenchart = makePieChart(CV.getVerenigingen());	
 		vereniggingenchart.setTitle("Vereniggingen");
 		ChartPanel vereniggingenchartpanel = new ChartPanel(vereniggingenchart);
-		
+			
 		JFreeChart plaatsenchart = makePieChart(CV.getPlaatsen());
-
+		plaatsenchart.setTitle("Locaties");
 		ChartPanel plaatsenchartpanel =  new ChartPanel(plaatsenchart);
-		
-		
+			
 		ChartPanel timechart =  new ChartPanel(makeTimeLine(CV.getData()));
-		
+			
 		GridBagConstraints c = new GridBagConstraints();   
 	 	c.gridx = 0;
 	    	c.gridy = 0;
 	    	c.gridwidth=2;
-		c.weightx=1;
-		c.weighty=1;
+		c.weightx=0.7;
+		c.weighty=0.6;
+		c.fill = GridBagConstraints.BOTH;
+		System.out.println("werk godverdomme");	
 		panel.add(timechart,c);
 		c=new GridBagConstraints();
 		c.gridx=0;
 		c.gridy=1;
-		c.weightx=10;
-		c.weighty=1;
+		c.weightx=0.35;
+		c.weighty=.4;
+		c.fill = GridBagConstraints.BOTH;
 		panel.add(vereniggingenchartpanel,c);
 		c=new GridBagConstraints();
 		c.gridx=1;
 		c.gridy=1;
-		c.weightx=1;
-		c.weighty=1;
+		c.weightx=.35;
+		c.weighty=.4;
+		c.fill = GridBagConstraints.BOTH;
 		panel.add(plaatsenchartpanel,c);
 		c=new GridBagConstraints();
 		c.gridx=2;
 		c.gridy=0;
 		c.weightx=1;
-		c.weighty=1;
+		c.weighty=.3;
 		c.gridheight=2;
+		c.fill = GridBagConstraints.BOTH;
 		panel.add(tabel,c);
 		
 		setVisible(true);
