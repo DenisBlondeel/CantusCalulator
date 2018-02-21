@@ -57,13 +57,10 @@ public class MainPane extends JFrame implements Observer{
     }
 
     public void drawCompleet(CantusVerzameling CV){
-		//panel.setLayout(null);
-		//panel.setSize();
-		GridLayout g = new GridLayout(1,2);
-	    	panel.setLayout(g);
-		GridLayout gTwo = new GridLayout(2,1);
-		JPanel newpanel = new JPanel(gTwo);
-		//GridBagConstraints gridBagConstraints = new GridBagConstraints();   
+		panel = new JPanel();		
+	    	getContentPane().add(panel);
+		GridBagLayout g = new GridBagLayout();
+		panel.setLayout(g);
 			
 	    	JScrollPane tabel = makeScrollTable(CV.getCantussen());
 		
@@ -72,32 +69,39 @@ public class MainPane extends JFrame implements Observer{
 		ChartPanel vereniggingenchartpanel = new ChartPanel(vereniggingenchart);
 		
 		JFreeChart plaatsenchart = makePieChart(CV.getPlaatsen());
-		GridLayout gThree; 
-		JPanel newnewpanel; 
-		if(plaatsenchart==null){
-			System.out.println("null");
-			gThree = new GridLayout(1,1);
-			newnewpanel = new JPanel(gThree);
-		}else{
-			System.out.println("not null");
-			plaatsenchart.setTitle("Locaties");
-			gThree = new GridLayout(1,2);
-			newnewpanel = new JPanel(gThree);
-	        }
+
 		ChartPanel plaatsenchartpanel =  new ChartPanel(plaatsenchart);
 		
 		
 		ChartPanel timechart =  new ChartPanel(makeTimeLine(CV.getData()));
-		newpanel.add(timechart);
 		
-		newnewpanel.add(vereniggingenchartpanel);
-		if(plaatsenchart!=null)
-			newnewpanel.add(plaatsenchartpanel);
-		newpanel.add(newnewpanel);
-		panel.add(newpanel);
-		panel.add(tabel);
-		//tabel.setBounds(panel.getWidth()*2/3,panel.getHeight()*2/3,panel.getWidth(),panel.getHeight());
-
+		GridBagConstraints c = new GridBagConstraints();   
+	 	c.gridx = 0;
+	    	c.gridy = 0;
+	    	c.gridwidth=2;
+		c.weightx=1;
+		c.weighty=1;
+		panel.add(timechart,c);
+		c=new GridBagConstraints();
+		c.gridx=0;
+		c.gridy=1;
+		c.weightx=10;
+		c.weighty=1;
+		panel.add(vereniggingenchartpanel,c);
+		c=new GridBagConstraints();
+		c.gridx=1;
+		c.gridy=1;
+		c.weightx=1;
+		c.weighty=1;
+		panel.add(plaatsenchartpanel,c);
+		c=new GridBagConstraints();
+		c.gridx=2;
+		c.gridy=0;
+		c.weightx=1;
+		c.weighty=1;
+		c.gridheight=2;
+		panel.add(tabel,c);
+		
 		setVisible(true);
 	}
 
