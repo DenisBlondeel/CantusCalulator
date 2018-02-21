@@ -30,6 +30,9 @@ import javax.swing.JScrollPane;
 import static java.util.Collections.frequency;
 import static org.jfree.util.SortOrder.DESCENDING;
 
+import java.awt.GridLayout;
+import java.awt.GridBagLayout;
+
 
 public class MainPane extends JFrame implements Observer{
 
@@ -50,28 +53,49 @@ public class MainPane extends JFrame implements Observer{
         panel = new JPanel();
         getContentPane().add(panel);
         splitPaneH = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        panel.add(splitPaneH, BorderLayout.EAST);
+        //panel.add(splitPaneH, BorderLayout.EAST);
     }
 
     public void drawCompleet(CantusVerzameling CV){
 		//panel.setLayout(null);
 		//panel.setSize();
-		JScrollPane tabel = makeScrollTable(CV.getCantussen());
+		GridLayout g = new GridLayout(1,2);
+	    	panel.setLayout(g);
+		GridLayout gTwo = new GridLayout(2,1);
+		JPanel newpanel = new JPanel(gTwo);
+		//GridBagConstraints gridBagConstraints = new GridBagConstraints();   
+			
+	    	JScrollPane tabel = makeScrollTable(CV.getCantussen());
 		
 		JFreeChart vereniggingenchart = makePieChart(CV.getVerenigingen());	
 		vereniggingenchart.setTitle("Vereniggingen");
 		ChartPanel vereniggingenchartpanel = new ChartPanel(vereniggingenchart);
 		
 		JFreeChart plaatsenchart = makePieChart(CV.getPlaatsen());
-		plaatsenchart.setTitle("Locaties");
+		GridLayout gThree; 
+		JPanel newnewpanel; 
+		if(plaatsenchart==null){
+			System.out.println("null");
+			gThree = new GridLayout(1,1);
+			newnewpanel = new JPanel(gThree);
+		}else{
+			System.out.println("not null");
+			plaatsenchart.setTitle("Locaties");
+			gThree = new GridLayout(1,2);
+			newnewpanel = new JPanel(gThree);
+	        }
 		ChartPanel plaatsenchartpanel =  new ChartPanel(plaatsenchart);
 		
 		
 		ChartPanel timechart =  new ChartPanel(makeTimeLine(CV.getData()));
-		panel.add(tabel,BorderLayout.EAST);
-		panel.add(vereniggingenchartpanel);
-		panel.add(plaatsenchartpanel);
-		panel.add(timechart);
+		newpanel.add(timechart);
+		
+		newnewpanel.add(vereniggingenchartpanel);
+		if(plaatsenchart!=null)
+			newnewpanel.add(plaatsenchartpanel);
+		newpanel.add(newnewpanel);
+		panel.add(newpanel);
+		panel.add(tabel);
 		//tabel.setBounds(panel.getWidth()*2/3,panel.getHeight()*2/3,panel.getWidth(),panel.getHeight());
 
 		setVisible(true);
