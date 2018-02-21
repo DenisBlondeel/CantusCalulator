@@ -57,54 +57,62 @@ public class MainPane extends JFrame implements Observer{
     }
 
     public void drawCompleet(CantusVerzameling CV){
-		panel = new JPanel();		
+	    	// SETUP
+	    	panel = new JPanel();		
 	    	getContentPane().add(panel);
+		setVisible(true);
 		GridBagLayout g = new GridBagLayout();
 		panel.setLayout(g);
-			
+		
+		//Get the charts and table
 	    	JScrollPane tabel = makeScrollTable(CV.getCantussen());
 		
 		JFreeChart vereniggingenchart = makePieChart(CV.getVerenigingen());	
 		vereniggingenchart.setTitle("Vereniggingen");
 		ChartPanel vereniggingenchartpanel = new ChartPanel(vereniggingenchart);
-			
 		JFreeChart plaatsenchart = makePieChart(CV.getPlaatsen());
-		plaatsenchart.setTitle("Locaties");
 		ChartPanel plaatsenchartpanel =  new ChartPanel(plaatsenchart);
-			
+				
+		if(containsNotNull(CV.getPlaatsen()))
+			plaatsenchart.setTitle("Locaties");
 		ChartPanel timechart =  new ChartPanel(makeTimeLine(CV.getData()));
-			
+		
+		
+		//Add the charts to the panel in the right column/rows
 		GridBagConstraints c = new GridBagConstraints();   
-	 	c.gridx = 0;
-	    	c.gridy = 0;
-	    	c.gridwidth=2;
-		c.weightx=0.7;
-		c.weighty=0.6;
+	 	c.gridx = 0; c.gridy = 0; c.gridwidth=2; c.weightx=0.7; c.weighty=0.8;
 		c.fill = GridBagConstraints.BOTH;
-		System.out.println("werk godverdomme");	
 		panel.add(timechart,c);
+		
 		c=new GridBagConstraints();
-		c.gridx=0;
-		c.gridy=1;
-		c.weightx=0.35;
-		c.weighty=.4;
+		c.gridx=0; c.gridy=1; c.weightx=0.55; c.weighty=.2;
+		if(!containsNotNull(CV.getPlaatsen()))
+			c.gridwidth=2;
 		c.fill = GridBagConstraints.BOTH;
 		panel.add(vereniggingenchartpanel,c);
+		
+		if(containsNotNull(CV.getPlaatsen())){
+			c=new GridBagConstraints();
+			c.gridx=1; c.gridy=1; c.weightx=.15; c.weighty=.2; 
+			c.fill = GridBagConstraints.BOTH;
+			panel.add(plaatsenchartpanel,c);
+		}
+		
 		c=new GridBagConstraints();
-		c.gridx=1;
-		c.gridy=1;
-		c.weightx=.35;
-		c.weighty=.4;
-		c.fill = GridBagConstraints.BOTH;
-		panel.add(plaatsenchartpanel,c);
-		c=new GridBagConstraints();
-		c.gridx=2;
-		c.gridy=0;
-		c.weightx=1;
-		c.weighty=.3;
-		c.gridheight=2;
+		c.gridx=2; c.gridy=0; c.weightx=1; c.weighty=.1; c.gridheight=2; c.gridwidth=1;
 		c.fill = GridBagConstraints.BOTH;
 		panel.add(tabel,c);
+		
+		// Set the preferred sizes of the charts so they have the right proportions.
+		Dimension d = getContentPane().getPreferredSize();
+		timechart.setPreferredSize(			new Dimension((int) (d.width*0.80),(int) (d.height*0.6)));
+		vereniggingenchartpanel.setPreferredSize(	new Dimension((int) (d.width*0.40),(int) (d.height*0.4)));
+		plaatsenchartpanel.setPreferredSize(		new Dimension((int) (d.width*0.40),(int) (d.height*0.4)));
+		tabel.setPreferredSize(				new Dimension((int) (d.width*0.20),(int) (d.height*1.0)));
+	//	System.out.println(new Dimension((int) (d.height*0.8) ,(int) (d.width*0.01)));
+	//	System.out.println(getContentPane().getPreferredSize().toString());	
+
+				
 		
 		setVisible(true);
 	}
