@@ -50,9 +50,9 @@ public class MainPane extends JFrame implements Observer{
 		System.out.println("draw mainpain");
 		this.controller = controller;
         setTitle("Grafiekjes");
-        panel = new JPanel();
-        getContentPane().add(panel);
-        splitPaneH = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        //panel = new JPanel();
+        //getContentPane().add(panel);
+        //splitPaneH = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         //panel.add(splitPaneH, BorderLayout.EAST);
     }
 
@@ -112,7 +112,7 @@ public class MainPane extends JFrame implements Observer{
 	//	System.out.println(new Dimension((int) (d.height*0.8) ,(int) (d.width*0.01)));
 	//	System.out.println(getContentPane().getPreferredSize().toString());	
 
-				
+		this.add(panel);			
 		
 		setVisible(true);
 	}

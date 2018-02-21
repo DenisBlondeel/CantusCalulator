@@ -80,8 +80,7 @@ public class StartScreen extends JFrame {
 
     class DrawGraphs implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            controller.getFacade().drawPieChart();
-            controller.getFacade().drawTimeline();
+            controller.getFacade().drawCompleet();
         }
     }
 
@@ -114,11 +113,11 @@ public class StartScreen extends JFrame {
         JLabel nameFile = new JLabel(filename.getText() + dir.getText());
         controller.getFacade().passFile(dir.getText() + "/" + filename.getText());
         
-        JLabel name = new JLabel("Je bestand op de volgende locatie is ingeladen! Je kan de grafieken bekijken via File -> Draw!");
-        pane.add(name);
-        pane.add(nameFile);
+        //JLabel name = new JLabel("Je bestand op de volgende locatie is ingeladen! Je kan de grafieken bekijken via File -> Draw!");
+        //pane.add(name);
+        //pane.add(nameFile);
         
-        pane.setVisible(true);
+        //pane.setVisible(true);
         this.pack();
         this.setVisible(true);
     }
