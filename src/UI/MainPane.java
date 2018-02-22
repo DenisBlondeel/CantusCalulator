@@ -61,6 +61,7 @@ public class MainPane extends JFrame implements Observer{
 		//panel = new JPanel();		
 	    	//JPanel jpanel=controller.screen.pane;
 		JPanel jpanel = new JPanel();
+		controller.screen.mainFrame.add(jpanel);
 		//controller.screen.add(panel);
 		//getContentPane().add(panel);
 		//setVisible(true);
@@ -103,24 +104,26 @@ public class MainPane extends JFrame implements Observer{
 		
 		c=new GridBagConstraints();
 		c.gridx=2; c.gridy=0; c.weightx=1; c.weighty=.1; c.gridheight=2; c.gridwidth=1;
-		c.fill = GridBagConstraints.BOTH;
+		c.fill = GridBagConstraints.VERTICAL;
+		
 		jpanel.add(tabel,c);
 		
 		// Set the preferred sizes of the charts so they have the right proportions.
-		Dimension d = getContentPane().getPreferredSize();
-		timechart.setPreferredSize(			new Dimension((int) (d.width*0.80),(int) (d.height*0.6)));
-		vereniggingenchartpanel.setPreferredSize(	new Dimension((int) (d.width*0.40),(int) (d.height*0.4)));
-		plaatsenchartpanel.setPreferredSize(		new Dimension((int) (d.width*0.40),(int) (d.height*0.4)));
-		tabel.setPreferredSize(				new Dimension((int) (d.width*0.20),(int) (d.height*1.0)));
-	//	System.out.println(new Dimension((int) (d.height*0.8) ,(int) (d.width*0.01)));
-	//	System.out.println(getContentPane().getPreferredSize().toString());	
+		//Dimension d = getContentPane().getPreferredSize();
+		//timechart.setPreferredSize(			new Dimension((int) (d.width*0.80),(int) (d.height*0.6)));
+		//vereniggingenchartpanel.setPreferredSize(	new Dimension((int) (d.width*0.40),(int) (d.height*0.4)));
+		//plaatsenchartpanel.setPreferredSize(		new Dimension((int) (d.width*0.40),(int) (d.height*0.4)));
+		//tabel.setPreferredSize(				new Dimension((int) (d.width*0.20),(int) (d.height*1.0)));
+		//System.out.println(new Dimension((int) (d.height*0.8) ,(int) (d.width*0.01)));
+		//System.out.println(getContentPane().getPreferredSize().toString());	
 
 		//this.add(panel);			
 		//controller.screen.add(panel);
 		//controller.screen.pane = jpanel;
 		//controller.screen.setVisible(true);//setVisible(true);
-		controller.mainFrame.add(jpanel);	
-	}
+		//controller.screen.mainFrame.add(jpanel);	
+		controller.screen.mainFrame.setVisible(true);	
+    }
 
 
 
