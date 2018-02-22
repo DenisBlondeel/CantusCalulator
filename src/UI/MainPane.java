@@ -9,7 +9,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import javax.swing.JPanel;
-
+import java.lang.Integer;
 import domain.Cantus;
 import domain.CantusVerzameling;
 import org.jfree.chart.ChartFactory;
@@ -33,6 +33,10 @@ import static org.jfree.util.SortOrder.DESCENDING;
 import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import java.awt.Shape;
 
 public class MainPane extends JFrame implements Observer{
 
@@ -72,7 +76,7 @@ public class MainPane extends JFrame implements Observer{
 	    	JScrollPane tabel = makeScrollTable(CV.getCantussen());
 		
 		JFreeChart vereniggingenchart = makePieChart(CV.getVerenigingen());	
-		vereniggingenchart.setTitle("Vereniggingen");
+		vereniggingenchart.setTitle("Verenigingen");
 		ChartPanel vereniggingenchartpanel = new ChartPanel(vereniggingenchart);
 		JFreeChart plaatsenchart = makePieChart(CV.getPlaatsen());
 		ChartPanel plaatsenchartpanel =  new ChartPanel(plaatsenchart);
@@ -104,7 +108,7 @@ public class MainPane extends JFrame implements Observer{
 		
 		c=new GridBagConstraints();
 		c.gridx=2; c.gridy=0; c.weightx=1; c.weighty=.1; c.gridheight=2; c.gridwidth=1;
-		c.fill = GridBagConstraints.VERTICAL;
+		c.fill = GridBagConstraints.BOTH;//.VERTICAL;
 		
 		jpanel.add(tabel,c);
 		
@@ -122,9 +126,61 @@ public class MainPane extends JFrame implements Observer{
 		//controller.screen.pane = jpanel;
 		//controller.screen.setVisible(true);//setVisible(true);
 		//controller.screen.mainFrame.add(jpanel);	
+		JTable t = (JTable) tabel.getViewport().getView();
+		t.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+    		public void valueChanged(ListSelectionEvent e) {
+        		System.out.println(e.toString());//handleSelectionEvent(e);
+			updateRows(t.getSelectedRows(), t,timechart);
+			//for(int i: t.getSelectedRows()){
+			//	System.out.println(t.getValueAt(i,0));
+    			//}
+				
+			//XYLineAndShapeRenderer renderer = timechart.getChart().getXYPlot().getRenderer();
+			Shape shape = new java.awt.geom.Ellipse2D.Double(-2.0, -2.0, 4.0, 4.0);
+			timechart.getChart().getXYPlot().getRenderer().setSeriesShape(1, shape);
+			((XYLineAndShapeRenderer) timechart.getChart().getXYPlot().getRenderer()).setSeriesShapesVisible(0, true);
+			
+			}
+		});	
 		controller.screen.mainFrame.setVisible(true);	
     }
+	
 
+    public void updateRows(int[] rows, JTable t, ChartPanel chart){
+    	JFreeChart c = chart.getChart();
+	XYPlot xyp = c.getXYPlot();
+	XYLineAndShapeRenderer r = (XYLineAndShapeRenderer) xyp.getRenderer();
+    	TimeSeriesCollection tsc = (TimeSeriesCollection) xyp.getDataset();
+	//System.out.println(Arrays.toString(rows));
+	for(int row: rows){
+		System.out.println(t.getValueAt(row,0));
+		for(int i=0; i<tsc.getSeriesCount();i++){
+			TimeSeries ts = tsc.getSeries(i);
+			//System.out.println(ts.getItemCount());
+			for(int j=0; j<ts.getItemCount();j++){
+				//System.out.println("datum =" + (Day)ts.getDataItem(j).getPeriod());
+				//Day d = (Day) ts.getDataItem(j).getPeriod();
+				if(samedate(t.getValueAt(row,0).toString(), (Day) ts.getDataItem(j).getPeriod())){
+					System.out.println("highlight datum" + t.getValueAt(row,0));
+				}
+			}
+		}	
+    	}
+	
+    }
+
+    public boolean samedate(String s, Day d){
+	String[] parts = s.split("/");
+	Day sd = new Day(Integer.parseInt(parts[0]),Integer.parseInt(parts[1]),Integer.parseInt(parts[2]));
+	if(sd.equals(d)){
+		System.out.println(sd + " is gelijk aan" + d);
+		return true;	
+	}
+	
+	//for(String p:parts)
+	//	System.out.println((int)p + d.getDayOfMonth() + );
+	return false;
+    }
 
 
     public void drawCantusTable(List<Cantus> cantussen){
