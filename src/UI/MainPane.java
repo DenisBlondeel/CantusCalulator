@@ -58,11 +58,14 @@ public class MainPane extends JFrame implements Observer{
 
     public void drawCompleet(CantusVerzameling CV){
 	    	// SETUP
-	    	panel = new JPanel();		
-	    	getContentPane().add(panel);
-		setVisible(true);
+		//panel = new JPanel();		
+	    	//JPanel jpanel=controller.screen.pane;
+		JPanel jpanel = new JPanel();
+		//controller.screen.add(panel);
+		//getContentPane().add(panel);
+		//setVisible(true);
 		GridBagLayout g = new GridBagLayout();
-		panel.setLayout(g);
+		jpanel.setLayout(g);
 		
 		//Get the charts and table
 	    	JScrollPane tabel = makeScrollTable(CV.getCantussen());
@@ -82,26 +85,26 @@ public class MainPane extends JFrame implements Observer{
 		GridBagConstraints c = new GridBagConstraints();   
 	 	c.gridx = 0; c.gridy = 0; c.gridwidth=2; c.weightx=0.7; c.weighty=0.8;
 		c.fill = GridBagConstraints.BOTH;
-		panel.add(timechart,c);
+		jpanel.add(timechart,c);
 		
 		c=new GridBagConstraints();
 		c.gridx=0; c.gridy=1; c.weightx=0.55; c.weighty=.2;
 		if(!containsNotNull(CV.getPlaatsen()))
 			c.gridwidth=2;
 		c.fill = GridBagConstraints.BOTH;
-		panel.add(vereniggingenchartpanel,c);
+		jpanel.add(vereniggingenchartpanel,c);
 		
 		if(containsNotNull(CV.getPlaatsen())){
 			c=new GridBagConstraints();
 			c.gridx=1; c.gridy=1; c.weightx=.15; c.weighty=.2; 
 			c.fill = GridBagConstraints.BOTH;
-			panel.add(plaatsenchartpanel,c);
+			jpanel.add(plaatsenchartpanel,c);
 		}
 		
 		c=new GridBagConstraints();
 		c.gridx=2; c.gridy=0; c.weightx=1; c.weighty=.1; c.gridheight=2; c.gridwidth=1;
 		c.fill = GridBagConstraints.BOTH;
-		panel.add(tabel,c);
+		jpanel.add(tabel,c);
 		
 		// Set the preferred sizes of the charts so they have the right proportions.
 		Dimension d = getContentPane().getPreferredSize();
@@ -112,9 +115,11 @@ public class MainPane extends JFrame implements Observer{
 	//	System.out.println(new Dimension((int) (d.height*0.8) ,(int) (d.width*0.01)));
 	//	System.out.println(getContentPane().getPreferredSize().toString());	
 
-		this.add(panel);			
-		
-		setVisible(true);
+		//this.add(panel);			
+		//controller.screen.add(panel);
+		//controller.screen.pane = jpanel;
+		//controller.screen.setVisible(true);//setVisible(true);
+		controller.mainFrame.add(jpanel);	
 	}
 
 

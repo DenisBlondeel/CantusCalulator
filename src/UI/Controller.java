@@ -9,7 +9,7 @@ import domain.Facade;
 
 public class Controller {
 
-    private StartScreen screen;
+    public StartScreen screen;
     private Observer main;
     private Facade facade;
 
