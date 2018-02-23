@@ -4,6 +4,7 @@ import java.awt.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -21,6 +22,8 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.util.ShapeUtilities;
+
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -62,7 +65,7 @@ public class MainPane extends JFrame implements Observer{
 
     public void drawCompleet(CantusVerzameling CV){
 	    	// SETUP
-		//panel = new JPanel();		
+		//panel = new JPanel();
 	    	//JPanel jpanel=controller.screen.pane;
 		JPanel jpanel = new JPanel();
 		controller.screen.mainFrame.add(jpanel);
@@ -111,7 +114,7 @@ public class MainPane extends JFrame implements Observer{
 		c.fill = GridBagConstraints.BOTH;//.VERTICAL;
 		
 		jpanel.add(tabel,c);
-		
+
 		// Set the preferred sizes of the charts so they have the right proportions.
 		//Dimension d = getContentPane().getPreferredSize();
 		//timechart.setPreferredSize(			new Dimension((int) (d.width*0.80),(int) (d.height*0.6)));
@@ -119,50 +122,46 @@ public class MainPane extends JFrame implements Observer{
 		//plaatsenchartpanel.setPreferredSize(		new Dimension((int) (d.width*0.40),(int) (d.height*0.4)));
 		//tabel.setPreferredSize(				new Dimension((int) (d.width*0.20),(int) (d.height*1.0)));
 		//System.out.println(new Dimension((int) (d.height*0.8) ,(int) (d.width*0.01)));
-		//System.out.println(getContentPane().getPreferredSize().toString());	
+		//System.out.println(getContentPane().getPreferredSize().toString());
 
-		//this.add(panel);			
+		//this.add(panel);
 		//controller.screen.add(panel);
 		//controller.screen.pane = jpanel;
 		//controller.screen.setVisible(true);//setVisible(true);
-		//controller.screen.mainFrame.add(jpanel);	
+		//controller.screen.mainFrame.add(jpanel);
 		JTable t = (JTable) tabel.getViewport().getView();
-		t.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-    		public void valueChanged(ListSelectionEvent e) {
-        		System.out.println(e.toString());//handleSelectionEvent(e);
-			updateRows(t.getSelectedRows(), t,timechart);
-			//for(int i: t.getSelectedRows()){
-			//	System.out.println(t.getValueAt(i,0));
-    			//}
-				
-			//XYLineAndShapeRenderer renderer = timechart.getChart().getXYPlot().getRenderer();
-			Shape shape = new java.awt.geom.Ellipse2D.Double(-2.0, -2.0, 4.0, 4.0);
-			timechart.getChart().getXYPlot().getRenderer().setSeriesShape(1, shape);
-			((XYLineAndShapeRenderer) timechart.getChart().getXYPlot().getRenderer()).setSeriesShapesVisible(0, true);
-			
-			}
-		});	
-		controller.screen.mainFrame.setVisible(true);	
+		t.getSelectionModel().addListSelectionListener(e -> {
+            System.out.println(e.toString());//handleSelectionEvent(e);
+        updateRows(t.getSelectedRows(), t,timechart);
+        });
+
+        controller.screen.mainFrame.setVisible(true);
     }
 	
 
     public void updateRows(int[] rows, JTable t, ChartPanel chart){
-    	JFreeChart c = chart.getChart();
-	XYPlot xyp = c.getXYPlot();
-	XYLineAndShapeRenderer r = (XYLineAndShapeRenderer) xyp.getRenderer();
-    	TimeSeriesCollection tsc = (TimeSeriesCollection) xyp.getDataset();
-	//System.out.println(Arrays.toString(rows));
-	for(int row: rows){
+        JFreeChart c = chart.getChart();
+	    XYPlot xyp = c.getXYPlot();
+	    XYLineAndShapeRenderer r = (XYLineAndShapeRenderer) xyp.getRenderer();
+	    TimeSeriesCollection tsc = (TimeSeriesCollection) xyp.getDataset();
+	    if(tsc.getSeries("invisible")==null){
+	        tsc.addSeries( new TimeSeries("invisible"));
+            Shape shape = new java.awt.geom.Ellipse2D.Double(-2.0, -2.0, 5.0, 5.0);
+            r.setSeriesShape(tsc.getSeriesIndex("invisible"), shape);
+            r.setSeriesShapesVisible(tsc.getSeriesIndex("invisible"),true);
+            r.setSeriesLinesVisible(tsc.getSeriesIndex("invisible"), false);
+            r.setSeriesVisibleInLegend(tsc.getSeriesIndex("invisible"),false );
+            r.setSeriesPaint(tsc.getSeriesIndex("invisible"), Color.black);
+	    }
+        TimeSeries s = tsc.getSeries("invisible");
+        for(int row: rows){
 		System.out.println(t.getValueAt(row,0));
 		for(int i=0; i<tsc.getSeriesCount();i++){
 			TimeSeries ts = tsc.getSeries(i);
-			//System.out.println(ts.getItemCount());
 			for(int j=0; j<ts.getItemCount();j++){
-				//System.out.println("datum =" + (Day)ts.getDataItem(j).getPeriod());
-				//Day d = (Day) ts.getDataItem(j).getPeriod();
 				if(samedate(t.getValueAt(row,0).toString(), (Day) ts.getDataItem(j).getPeriod())){
-					System.out.println("highlight datum" + t.getValueAt(row,0));
-				}
+                    s.addOrUpdate(ts.getDataItem(j).getPeriod(), ts.getDataItem(j).getValue());
+                }
 			}
 		}	
     	}
