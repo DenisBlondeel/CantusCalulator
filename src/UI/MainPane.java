@@ -64,56 +64,58 @@ public class MainPane extends JFrame implements Observer{
     }
 
     public void drawCompleet(CantusVerzameling CV){
-	    	// SETUP
-		//panel = new JPanel();
-	    	//JPanel jpanel=controller.screen.pane;
-		JPanel jpanel = new JPanel();
-		controller.screen.mainFrame.add(jpanel);
-		//controller.screen.add(panel);
-		//getContentPane().add(panel);
-		//setVisible(true);
-		GridBagLayout g = new GridBagLayout();
-		jpanel.setLayout(g);
-		
-		//Get the charts and table
-	    	JScrollPane tabel = makeScrollTable(CV.getCantussen());
-		
-		JFreeChart vereniggingenchart = makePieChart(CV.getVerenigingen());	
-		vereniggingenchart.setTitle("Verenigingen");
-		ChartPanel vereniggingenchartpanel = new ChartPanel(vereniggingenchart);
-		JFreeChart plaatsenchart = makePieChart(CV.getPlaatsen());
-		ChartPanel plaatsenchartpanel =  new ChartPanel(plaatsenchart);
+	// SETUP
+	//panel = new JPanel();
+	//JPanel jpanel=controller.screen.pane;
+	Panel jpanel = new JPanel();
+	controller.screen.mainFrame.add(jpanel);
+	//controller.screen.add(panel);
+	//getContentPane().add(panel);
+	//setVisible(true);
+	GridBagLayout g = new GridBagLayout();
+	jpanel.setLayout(g);
+	
+
+	//Get the charts and table
+    	JScrollPane tabel = makeScrollTable(CV.getCantussen());
+
+	JFreeChart vereniggingenchart = makePieChart(CV.getVerenigingen());	
+	vereniggingenchart.setTitle("Verenigingen");
+	ChartPanel vereniggingenchartpanel = new ChartPanel(vereniggingenchart);
+
+	JFreeChart plaatsenchart = makePieChart(CV.getPlaatsen());
+	ChartPanel plaatsenchartpanel =  new ChartPanel(plaatsenchart);
 				
-		if(containsNotNull(CV.getPlaatsen()))
-			plaatsenchart.setTitle("Locaties");
-		ChartPanel timechart =  new ChartPanel(makeTimeLine(CV.getData()));
+	if(containsNotNull(CV.getPlaatsen()))
+	    plaatsenchart.setTitle("Locaties");
+	ChartPanel timechart =  new ChartPanel(makeTimeLine(CV.getData()));
 		
 		
-		//Add the charts to the panel in the right column/rows
-		GridBagConstraints c = new GridBagConstraints();   
-	 	c.gridx = 0; c.gridy = 0; c.gridwidth=2; c.weightx=0.7; c.weighty=0.8;
-		c.fill = GridBagConstraints.BOTH;
-		jpanel.add(timechart,c);
+	//Add the charts to the panel in the right column/rows
+	GridBagConstraints c = new GridBagConstraints();   
+ 	c.gridx = 0; c.gridy = 0; c.gridwidth=2; c.weightx=0.7; c.weighty=0.8;
+	c.fill = GridBagConstraints.BOTH;
+	jpanel.add(timechart,c);
+	
+	c=new GridBagConstraints();
+	c.gridx=0; c.gridy=1; c.weightx=0.55; c.weighty=.2;
+	if(!containsNotNull(CV.getPlaatsen()))
+	    c.gridwidth=2;
+	c.fill = GridBagConstraints.BOTH;
+	jpanel.add(vereniggingenchartpanel,c);
 		
-		c=new GridBagConstraints();
-		c.gridx=0; c.gridy=1; c.weightx=0.55; c.weighty=.2;
-		if(!containsNotNull(CV.getPlaatsen()))
-			c.gridwidth=2;
-		c.fill = GridBagConstraints.BOTH;
-		jpanel.add(vereniggingenchartpanel,c);
+	if(containsNotNull(CV.getPlaatsen())){
+	    c=new GridBagConstraints();
+	    c.gridx=1; c.gridy=1; c.weightx=.15; c.weighty=.2; 
+	    c.fill = GridBagConstraints.BOTH;
+	    jpanel.add(plaatsenchartpanel,c);
+	}
 		
-		if(containsNotNull(CV.getPlaatsen())){
-			c=new GridBagConstraints();
-			c.gridx=1; c.gridy=1; c.weightx=.15; c.weighty=.2; 
-			c.fill = GridBagConstraints.BOTH;
-			jpanel.add(plaatsenchartpanel,c);
-		}
+	c=new GridBagConstraints();
+	c.gridx=2; c.gridy=0; c.weightx=1; c.weighty=.1; c.gridheight=2; c.gridwidth=1;
+	c.fill = GridBagConstraints.BOTH;//.VERTICAL;
 		
-		c=new GridBagConstraints();
-		c.gridx=2; c.gridy=0; c.weightx=1; c.weighty=.1; c.gridheight=2; c.gridwidth=1;
-		c.fill = GridBagConstraints.BOTH;//.VERTICAL;
-		
-		jpanel.add(tabel,c);
+	jpanel.add(tabel,c);
 
 		// Set the preferred sizes of the charts so they have the right proportions.
 		//Dimension d = getContentPane().getPreferredSize();
@@ -129,9 +131,9 @@ public class MainPane extends JFrame implements Observer{
 		//controller.screen.pane = jpanel;
 		//controller.screen.setVisible(true);//setVisible(true);
 		//controller.screen.mainFrame.add(jpanel);
-		JTable t = (JTable) tabel.getViewport().getView();
-		t.getSelectionModel().addListSelectionListener(e -> {
-            System.out.println(e.toString());//handleSelectionEvent(e);
+	JTable t = (JTable) tabel.getViewport().getView();
+	t.getSelectionModel().addListSelectionListener(e -> {
+        System.out.println(e.toString());//handleSelectionEvent(e);
         updateRows(t.getSelectedRows(), t,timechart);
         });
 
@@ -141,11 +143,11 @@ public class MainPane extends JFrame implements Observer{
 
     public void updateRows(int[] rows, JTable t, ChartPanel chart){
         JFreeChart c = chart.getChart();
-	    XYPlot xyp = c.getXYPlot();
-	    XYLineAndShapeRenderer r = (XYLineAndShapeRenderer) xyp.getRenderer();
-	    TimeSeriesCollection tsc = (TimeSeriesCollection) xyp.getDataset();
-	    if(tsc.getSeries("invisible")==null){
-	        tsc.addSeries( new TimeSeries("invisible"));
+	XYPlot xyp = c.getXYPlot();
+	XYLineAndShapeRenderer r = (XYLineAndShapeRenderer) xyp.getRenderer();
+	TimeSeriesCollection tsc = (TimeSeriesCollection) xyp.getDataset();
+	if(tsc.getSeries("invisible")==null){
+	    tsc.addSeries( new TimeSeries("invisible"));
             Shape shape = new java.awt.geom.Ellipse2D.Double(-2.0, -2.0, 5.0, 5.0);
             r.setSeriesShape(tsc.getSeriesIndex("invisible"), shape);
             r.setSeriesShapesVisible(tsc.getSeriesIndex("invisible"),true);
@@ -155,17 +157,15 @@ public class MainPane extends JFrame implements Observer{
 	    }
         TimeSeries s = tsc.getSeries("invisible");
         for(int row: rows){
-		System.out.println(t.getValueAt(row,0));
-		for(int i=0; i<tsc.getSeriesCount();i++){
-			TimeSeries ts = tsc.getSeries(i);
-			for(int j=0; j<ts.getItemCount();j++){
-				if(samedate(t.getValueAt(row,0).toString(), (Day) ts.getDataItem(j).getPeriod())){
-                    s.addOrUpdate(ts.getDataItem(j).getPeriod(), ts.getDataItem(j).getValue());
-                }
-			}
-		}	
+	    System.out.println(t.getValueAt(row,0));
+	    for(int i=0; i<tsc.getSeriesCount();i++){
+	        TimeSeries ts = tsc.getSeries(i);
+		for(int j=0; j<ts.getItemCount();j++){
+		    if(samedate(t.getValueAt(row,0).toString(), (Day) ts.getDataItem(j).getPeriod()))
+                        s.addOrUpdate(ts.getDataItem(j).getPeriod(), ts.getDataItem(j).getValue());
+		}
+	    }	
     	}
-	
     }
 
     public boolean samedate(String s, Day d){
