@@ -16,6 +16,7 @@ import domain.CantusVerzameling;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.general.DefaultPieDataset;
@@ -67,7 +68,7 @@ public class MainPane extends JFrame implements Observer{
 	// SETUP
 	//panel = new JPanel();
 	//JPanel jpanel=controller.screen.pane;
-	Panel jpanel = new JPanel();
+	JPanel jpanel = new JPanel();
 	controller.screen.mainFrame.add(jpanel);
 	//controller.screen.add(panel);
 	//getContentPane().add(panel);
@@ -133,16 +134,17 @@ public class MainPane extends JFrame implements Observer{
 		//controller.screen.mainFrame.add(jpanel);
 	JTable t = (JTable) tabel.getViewport().getView();
 	t.getSelectionModel().addListSelectionListener(e -> {
-        System.out.println(e.toString());//handleSelectionEvent(e);
-        updateRows(t.getSelectedRows(), t,timechart);
+            //System.out.println(e.toString());//handleSelectionEvent(e);
+            updateRows(t.getSelectedRows(), t,timechart,vereniggingenchartpanel,plaatsenchartpanel);
         });
 
         controller.screen.mainFrame.setVisible(true);
     }
 	
 
-    public void updateRows(int[] rows, JTable t, ChartPanel chart){
-        JFreeChart c = chart.getChart();
+    public void updateRows(int[] rows, JTable t, ChartPanel chartt,ChartPanel chartv, ChartPanel chartp){
+        //aanduiden in timechart
+	JFreeChart c = chartt.getChart();
 	XYPlot xyp = c.getXYPlot();
 	XYLineAndShapeRenderer r = (XYLineAndShapeRenderer) xyp.getRenderer();
 	TimeSeriesCollection tsc = (TimeSeriesCollection) xyp.getDataset();
@@ -157,7 +159,7 @@ public class MainPane extends JFrame implements Observer{
 	    }
         TimeSeries s = tsc.getSeries("invisible");
         for(int row: rows){
-	    System.out.println(t.getValueAt(row,0));
+	    //System.out.println(t.getValueAt(row,0));
 	    for(int i=0; i<tsc.getSeriesCount();i++){
 	        TimeSeries ts = tsc.getSeries(i);
 		for(int j=0; j<ts.getItemCount();j++){
@@ -165,19 +167,27 @@ public class MainPane extends JFrame implements Observer{
                         s.addOrUpdate(ts.getDataItem(j).getPeriod(), ts.getDataItem(j).getValue());
 		}
 	    }	
-    	}
+    		
+	    //explode chartv en chartp
+	    if(0==((PiePlot) chartv.getChart().getPlot()).getExplodePercent(t.getValueAt(row,2).toString())){
+	        System.out.println("explode " + t.getValueAt(row,2).toString() + " in vereniggingen, was exploded:" +((PiePlot) chartv.getChart().getPlot()).getExplodePercent(t.getValueAt(row,2).toString()));
+	        ((PiePlot) chartv.getChart().getPlot()).setExplodePercent(t.getValueAt(row,2).toString(),.33);
+	    }
+	    if(t.getValueAt(row,3)!=null&&0==((PiePlot) chartv.getChart().getPlot()).getExplodePercent(t.getValueAt(row,3).toString())){
+	      	((PiePlot) chartp.getChart().getPlot()).setExplodePercent(t.getValueAt(row,3).toString(),.33);
+    		
+	    }
+	}
+	
     }
 
     public boolean samedate(String s, Day d){
 	String[] parts = s.split("/");
 	Day sd = new Day(Integer.parseInt(parts[0]),Integer.parseInt(parts[1]),Integer.parseInt(parts[2]));
 	if(sd.equals(d)){
-		System.out.println(sd + " is gelijk aan" + d);
-		return true;	
+	    //System.out.println(sd + " is gelijk aan" + d);
+	    return true;	
 	}
-	
-	//for(String p:parts)
-	//	System.out.println((int)p + d.getDayOfMonth() + );
 	return false;
     }
 
@@ -196,7 +206,7 @@ public class MainPane extends JFrame implements Observer{
 
 	public JScrollPane makeScrollTable(List<Cantus> cantussen){
 		DefaultTableModel model = new DefaultTableModel();
-		System.out.println("joepie");
+		//System.out.println("joepie");
 		//Object[] column = {"Datum", "Cantus","Vereniging","plaats"};
 		model.addColumn("Datum");
 		model.addColumn("Cantus");
