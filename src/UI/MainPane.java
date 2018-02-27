@@ -49,14 +49,15 @@ public class MainPane extends JFrame implements Observer{
     private int wintercount = 1;
     private static final long serialVersionUID = -9090407129402452701L;
 
+    private boolean plaatsFlag;
     private Controller controller;
     private JPanel panel;
     private JSplitPane splitPaneH;
 
     public MainPane(Controller controller)
     {
-		System.out.println("draw mainpain");
-		this.controller = controller;
+	System.out.println("draw mainpain");
+	this.controller = controller;
         setTitle("Grafiekjes");
         //panel = new JPanel();
         //getContentPane().add(panel);
@@ -75,20 +76,25 @@ public class MainPane extends JFrame implements Observer{
 	//setVisible(true);
 	GridBagLayout g = new GridBagLayout();
 	jpanel.setLayout(g);
-	
+		
 
 	//Get the charts and table
-    	JScrollPane tabel = makeScrollTable(CV.getCantussen());
+    	this.plaatsFlag=containsNotNull(CV.getPlaatsen());
+		
+	JScrollPane tabel = makeScrollTable(CV.getCantussen());
 
 	JFreeChart vereniggingenchart = makePieChart(CV.getVerenigingen());	
+	vereniggingenchart.getPlot().setBackgroundPaint(Color.WHITE);
 	vereniggingenchart.setTitle("Verenigingen");
 	ChartPanel vereniggingenchartpanel = new ChartPanel(vereniggingenchart);
 
 	JFreeChart plaatsenchart = makePieChart(CV.getPlaatsen());
 	ChartPanel plaatsenchartpanel =  new ChartPanel(plaatsenchart);
 				
-	if(containsNotNull(CV.getPlaatsen()))
+	if(plaatsFlag){
 	    plaatsenchart.setTitle("Locaties");
+	    plaatsenchart.getPlot().setBackgroundPaint(Color.WHITE);
+	}
 	ChartPanel timechart =  new ChartPanel(makeTimeLine(CV.getData()));
 		
 		
@@ -99,15 +105,15 @@ public class MainPane extends JFrame implements Observer{
 	jpanel.add(timechart,c);
 	
 	c=new GridBagConstraints();
-	c.gridx=0; c.gridy=1; c.weightx=0.55; c.weighty=.2;
-	if(!containsNotNull(CV.getPlaatsen()))
+	c.gridx=0; c.gridy=1; c.weightx=0.35; c.weighty=.2;
+	if(!plaatsFlag)
 	    c.gridwidth=2;
 	c.fill = GridBagConstraints.BOTH;
 	jpanel.add(vereniggingenchartpanel,c);
 		
-	if(containsNotNull(CV.getPlaatsen())){
+	if(plaatsFlag){
 	    c=new GridBagConstraints();
-	    c.gridx=1; c.gridy=1; c.weightx=.15; c.weighty=.2; 
+	    c.gridx=1; c.gridy=1; c.weightx=.35; c.weighty=.2; 
 	    c.fill = GridBagConstraints.BOTH;
 	    jpanel.add(plaatsenchartpanel,c);
 	}
@@ -158,7 +164,10 @@ public class MainPane extends JFrame implements Observer{
             r.setSeriesPaint(tsc.getSeriesIndex("invisible"), Color.black);
 	    }
         TimeSeries s = tsc.getSeries("invisible");
-        for(int row: rows){
+        s.clear();
+	HashSet<String> pset = new HashSet<>();
+	HashSet<String> vset = new HashSet<>();
+	for(int row: rows){
 	    //System.out.println(t.getValueAt(row,0));
 	    for(int i=0; i<tsc.getSeriesCount();i++){
 	        TimeSeries ts = tsc.getSeries(i);
@@ -167,18 +176,36 @@ public class MainPane extends JFrame implements Observer{
                         s.addOrUpdate(ts.getDataItem(j).getPeriod(), ts.getDataItem(j).getValue());
 		}
 	    }	
-    		
+    	    if(plaatsFlag)
+		    pset.add(t.getValueAt(row,3).toString());
+	    vset.add(t.getValueAt(row,2).toString());
 	    //explode chartv en chartp
+	    /*
 	    if(0==((PiePlot) chartv.getChart().getPlot()).getExplodePercent(t.getValueAt(row,2).toString())){
 	        System.out.println("explode " + t.getValueAt(row,2).toString() + " in vereniggingen, was exploded:" +((PiePlot) chartv.getChart().getPlot()).getExplodePercent(t.getValueAt(row,2).toString()));
 	        ((PiePlot) chartv.getChart().getPlot()).setExplodePercent(t.getValueAt(row,2).toString(),.33);
 	    }
 	    if(t.getValueAt(row,3)!=null&&0==((PiePlot) chartv.getChart().getPlot()).getExplodePercent(t.getValueAt(row,3).toString())){
 	      	((PiePlot) chartp.getChart().getPlot()).setExplodePercent(t.getValueAt(row,3).toString(),.33);
-    		
+    	    */	
+	    }
+	
+	for(Object o:  ((PiePlot) chartv.getChart().getPlot()).getDataset().getKeys()){
+	    String str = o.toString();
+	    if(vset.contains(str))
+	        ((PiePlot) chartv.getChart().getPlot()).setExplodePercent(str,.33);
+    	    else if(str!=null)	    
+	        ((PiePlot) chartv.getChart().getPlot()).setExplodePercent(str,0);
+	}
+	if(plaatsFlag){
+   	    for(Object o:  ((PiePlot) chartp.getChart().getPlot()).getDataset().getKeys()){
+	        String str = o.toString();
+  	        if(pset.contains(str))
+	            ((PiePlot) chartp.getChart().getPlot()).setExplodePercent(str,.33);
+    	        else if(str!=null)	    
+	            ((PiePlot) chartp.getChart().getPlot()).setExplodePercent(str,0);
 	    }
 	}
-	
     }
 
     public boolean samedate(String s, Day d){
@@ -211,14 +238,21 @@ public class MainPane extends JFrame implements Observer{
 		model.addColumn("Datum");
 		model.addColumn("Cantus");
 		model.addColumn("Vereniging");
-		model.addColumn("plaats");
+		if(plaatsFlag)
+			model.addColumn("plaats");
 		cantussen.sort(Cantus::compareTo);
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		for(Cantus cantus : cantussen){
-			Object[] array = {df.format(cantus.datum.getTime()), cantus.naam, cantus.vereniging,cantus.plaats};
-			model.addRow(array);
+		if(plaatsFlag){
+			for(Cantus cantus : cantussen){
+				Object[] array = {df.format(cantus.datum.getTime()), cantus.naam, cantus.vereniging,cantus.plaats};
+				model.addRow(array);
+			}
+		} else {
+			for(Cantus cantus : cantussen){
+				Object[] array = {df.format(cantus.datum.getTime()), cantus.naam, cantus.vereniging};
+				model.addRow(array);
+			}			
 		}
-
 		JTable table = new JTable(model);
 
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -248,7 +282,7 @@ public class MainPane extends JFrame implements Observer{
 	}
 
 	public JFreeChart makePieChart(List<String> dataset){
-		if(containsNotNull(dataset)){
+		if(plaatsFlag){
 			dataset.sort(String::compareTo);
 		} else {
 			return null;
