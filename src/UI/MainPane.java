@@ -49,7 +49,7 @@ public class MainPane extends JFrame implements Observer{
     private int wintercount = 1;
     private static final long serialVersionUID = -9090407129402452701L;
 
-    private boolean plaatsFlag;
+    private boolean plaatsFlag;//true als er plaatsen in de file staan, false anders
     private Controller controller;
     private JPanel panel;
     private JSplitPane splitPaneH;
@@ -59,21 +59,13 @@ public class MainPane extends JFrame implements Observer{
 	System.out.println("draw mainpain");
 	this.controller = controller;
         setTitle("Grafiekjes");
-        //panel = new JPanel();
-        //getContentPane().add(panel);
-        //splitPaneH = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        //panel.add(splitPaneH, BorderLayout.EAST);
     }
-
+    
+    //teken al de charts en tabel.
     public void drawCompleet(CantusVerzameling CV){
 	// SETUP
-	//panel = new JPanel();
-	//JPanel jpanel=controller.screen.pane;
 	JPanel jpanel = new JPanel();
 	controller.screen.mainFrame.add(jpanel);
-	//controller.screen.add(panel);
-	//getContentPane().add(panel);
-	//setVisible(true);
 	GridBagLayout g = new GridBagLayout();
 	jpanel.setLayout(g);
 		
@@ -98,7 +90,7 @@ public class MainPane extends JFrame implements Observer{
 	ChartPanel timechart =  new ChartPanel(makeTimeLine(CV.getData()));
 		
 		
-	//Add the charts to the panel in the right column/rows
+	//Add the charts to the panel in the right column/rows met de juiste verhoudingen.
 	GridBagConstraints c = new GridBagConstraints();   
  	c.gridx = 0; c.gridy = 0; c.gridwidth=2; c.weightx=0.7; c.weighty=0.8;
 	c.fill = GridBagConstraints.BOTH;
@@ -121,33 +113,19 @@ public class MainPane extends JFrame implements Observer{
 	c=new GridBagConstraints();
 	c.gridx=2; c.gridy=0; c.weightx=1; c.weighty=.1; c.gridheight=2; c.gridwidth=1;
 	c.fill = GridBagConstraints.BOTH;//.VERTICAL;
-		
 	jpanel.add(tabel,c);
 
-		// Set the preferred sizes of the charts so they have the right proportions.
-		//Dimension d = getContentPane().getPreferredSize();
-		//timechart.setPreferredSize(			new Dimension((int) (d.width*0.80),(int) (d.height*0.6)));
-		//vereniggingenchartpanel.setPreferredSize(	new Dimension((int) (d.width*0.40),(int) (d.height*0.4)));
-		//plaatsenchartpanel.setPreferredSize(		new Dimension((int) (d.width*0.40),(int) (d.height*0.4)));
-		//tabel.setPreferredSize(				new Dimension((int) (d.width*0.20),(int) (d.height*1.0)));
-		//System.out.println(new Dimension((int) (d.height*0.8) ,(int) (d.width*0.01)));
-		//System.out.println(getContentPane().getPreferredSize().toString());
-
-		//this.add(panel);
-		//controller.screen.add(panel);
-		//controller.screen.pane = jpanel;
-		//controller.screen.setVisible(true);//setVisible(true);
-		//controller.screen.mainFrame.add(jpanel);
 	JTable t = (JTable) tabel.getViewport().getView();
+	
+	//update als er iets word aangeduid in de tabel
 	t.getSelectionModel().addListSelectionListener(e -> {
-            //System.out.println(e.toString());//handleSelectionEvent(e);
             updateRows(t.getSelectedRows(), t,timechart,vereniggingenchartpanel,plaatsenchartpanel);
         });
 
         controller.screen.mainFrame.setVisible(true);
     }
 	
-
+    //update de charts aan de hand van de rijen die aangeduid zijn in de tabel
     public void updateRows(int[] rows, JTable t, ChartPanel chartt,ChartPanel chartv, ChartPanel chartp){
         //aanduiden in timechart
 	JFreeChart c = chartt.getChart();
@@ -168,7 +146,6 @@ public class MainPane extends JFrame implements Observer{
 	HashSet<String> pset = new HashSet<>();
 	HashSet<String> vset = new HashSet<>();
 	for(int row: rows){
-	    //System.out.println(t.getValueAt(row,0));
 	    for(int i=0; i<tsc.getSeriesCount();i++){
 	        TimeSeries ts = tsc.getSeries(i);
 		for(int j=0; j<ts.getItemCount();j++){
@@ -176,20 +153,12 @@ public class MainPane extends JFrame implements Observer{
                         s.addOrUpdate(ts.getDataItem(j).getPeriod(), ts.getDataItem(j).getValue());
 		}
 	    }	
-    	    if(plaatsFlag)
+    	    //voorbereidend werk voor de piecharts te exploden
+	    if(plaatsFlag)
 		    pset.add(t.getValueAt(row,3).toString());
 	    vset.add(t.getValueAt(row,2).toString());
-	    //explode chartv en chartp
-	    /*
-	    if(0==((PiePlot) chartv.getChart().getPlot()).getExplodePercent(t.getValueAt(row,2).toString())){
-	        System.out.println("explode " + t.getValueAt(row,2).toString() + " in vereniggingen, was exploded:" +((PiePlot) chartv.getChart().getPlot()).getExplodePercent(t.getValueAt(row,2).toString()));
-	        ((PiePlot) chartv.getChart().getPlot()).setExplodePercent(t.getValueAt(row,2).toString(),.33);
 	    }
-	    if(t.getValueAt(row,3)!=null&&0==((PiePlot) chartv.getChart().getPlot()).getExplodePercent(t.getValueAt(row,3).toString())){
-	      	((PiePlot) chartp.getChart().getPlot()).setExplodePercent(t.getValueAt(row,3).toString(),.33);
-    	    */	
-	    }
-	
+	//explode de piecharts
 	for(Object o:  ((PiePlot) chartv.getChart().getPlot()).getDataset().getKeys()){
 	    String str = o.toString();
 	    if(vset.contains(str))
@@ -208,33 +177,26 @@ public class MainPane extends JFrame implements Observer{
 	}
     }
 
+    //kijk na of een string die uit de tabel komt dezelfde dag voorstelt als een dag die uit de timechart is gehaald.
     public boolean samedate(String s, Day d){
 	String[] parts = s.split("/");
 	Day sd = new Day(Integer.parseInt(parts[0]),Integer.parseInt(parts[1]),Integer.parseInt(parts[2]));
-	if(sd.equals(d)){
-	    //System.out.println(sd + " is gelijk aan" + d);
-	    return true;	
-	}
-	return false;
+	return(sd.equals(d));
     }
 
-
+    //draw de cantusTable, wordt momenteel niet meer gebruikt, kan later terug nodig zijn.
     public void drawCantusTable(List<Cantus> cantussen){
 
 		JScrollPane jtable = makeScrollTable(cantussen);
-		//table.setPreferredScrollableViewportSize(table.getPreferredSize());
-		//table.setFillsViewportHeight(true);
 		panel.add(jtable);
-		//table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS	);
 		panel.setVisible(true);
 		this.pack();
 		this.setVisible(true);
 	}
 
-	public JScrollPane makeScrollTable(List<Cantus> cantussen){
+    //construeer de scrollTable met een tabel van alle cantussen
+    public JScrollPane makeScrollTable(List<Cantus> cantussen){
 		DefaultTableModel model = new DefaultTableModel();
-		//System.out.println("joepie");
-		//Object[] column = {"Datum", "Cantus","Vereniging","plaats"};
 		model.addColumn("Datum");
 		model.addColumn("Cantus");
 		model.addColumn("Vereniging");
@@ -259,9 +221,7 @@ public class MainPane extends JFrame implements Observer{
 		return new JScrollPane(table);
 	}
 
-    /*
-    gaat er van uit dat dataset gesorteerd is, kan niet in de tijd reizen.
-     */
+    //drawt een pieChart; wordt momenteel niet meer gebruikt, kan later terug nodig zijn.
     //@Override
     public void drawPieChart(List<String> dataset) {
 
@@ -274,6 +234,7 @@ public class MainPane extends JFrame implements Observer{
 		this.setVisible(true);
     }
 
+    //gaat na of een lijst een niet null element bevat. nodig om te kijken of er plaatsen zijn ingegeven.
     private boolean containsNotNull(List<String> l){
     	for(String s: l)
     		if(s != null && s.length()>0)
@@ -281,7 +242,8 @@ public class MainPane extends JFrame implements Observer{
     	return false;
 	}
 
-	public JFreeChart makePieChart(List<String> dataset){
+    //construeer een piechart van een dataset. wordt gebruikt om de verenigingen en de plaatsen in een piechart te zetten.
+    public JFreeChart makePieChart(List<String> dataset){
 		if(plaatsFlag){
 			dataset.sort(String::compareTo);
 		} else {
@@ -321,28 +283,16 @@ public class MainPane extends JFrame implements Observer{
 	}
 
 
-	/*
-	==========TIMELINE==========
-	==========TIMELINE==========
-	==========TIMELINE==========
-	==========TIMELINE==========
-	 */
-
-	/*
-	gaat er van uit dat dataset gesorteerd is, kan niet in de tijd reizen.
-	 */
+	//drawt de timeline; wordt momenteel niet gebruikt, kan later terug nodig zijn.
 	@Override
-	public void drawTimeline(List<Calendar> dataset)
-	{
-
-
+	public void drawTimeline(List<Calendar> dataset){
         splitPaneH.setRightComponent(new ChartPanel(makeTimeLine(dataset)));
-
         panel.setVisible(true);
         this.pack();
         this.setVisible(true);
 	}
 
+	//construeert de timeline
 	public JFreeChart makeTimeLine(List<Calendar> dataset){
 		dataset.sort(Calendar::compareTo);
 		genCumul(dataset,7);
@@ -377,7 +327,8 @@ public class MainPane extends JFrame implements Observer{
 		plot.setRenderer(2,r2);
 		return chart;
 	}
-
+	
+    //construeer de timeseriescollection van de lijst van data.
     private TimeSeriesCollection constructTSC(List<Calendar> dataset){
         TimeSeriesCollection tsc = new TimeSeriesCollection();
         TimeSeries series = new TimeSeries("Series1");
@@ -410,6 +361,7 @@ public class MainPane extends JFrame implements Observer{
         return tsc;
     }
 
+    //genereer de cumulatieve lijn voor de laatste %i dagen.
     private TimeSeries genCumul(List<Calendar> ds, int i){
 		TimeSeries series = new TimeSeries("Cumul" + i);
     	Calendar start = (Calendar) ds.get(0).clone();
@@ -432,10 +384,12 @@ public class MainPane extends JFrame implements Observer{
     	return series;
 	}
 
+    	//enum van mogelijke periodes
 	public enum Period {
 		SEMESTER, SUMMER, WINTER
 	}
-
+	
+	//kijk na in welke periode een dag valt.
 	private Period getPeriod(Calendar c){
 
 		Calendar c2 = getStartYear(c);
@@ -453,9 +407,9 @@ public class MainPane extends JFrame implements Observer{
 	}
 
 	/*
-berekend de start van het academiejaar voor datum c
-de eerste maandag na de 20ste september die c voorafgaat
- */
+	berekend de start van het academiejaar voor datum c
+	de eerste maandag na de 20ste september die c voorafgaat
+	 */
 	private Calendar getStartYear(Calendar c){
 		Calendar c2 = Calendar.getInstance();
 		c2.set(c.get(Calendar.YEAR),Calendar.SEPTEMBER,20);
@@ -468,12 +422,13 @@ de eerste maandag na de 20ste september die c voorafgaat
 		return c2;
 	}
 
-
+	//vormt een dag om naar de eerstvolgende maandag.
 	private void nextMonday(Calendar c){
 		while(c.get(Calendar.DAY_OF_WEEK)!=Calendar.MONDAY)
 			c.add(Calendar.DATE,1);
 	}
-
+	
+	//geef het aantal dagen tussen 2 dagen terug
 	private static long daysBetween(Calendar startDate, Calendar endDate) {
 		long end = endDate.getTimeInMillis();
 		long start = startDate.getTimeInMillis();
@@ -501,7 +456,7 @@ de eerste maandag na de 20ste september die c voorafgaat
 				(d1<243 && d2 >= 243));
 		}
 
-
+	//geef aan de hoeveelste keer dat een periode gebruikt is.
 	private int getCount(Period p){
 		if(p.equals(Period.SEMESTER))
 			return semestercount;
@@ -510,6 +465,7 @@ de eerste maandag na de 20ste september die c voorafgaat
 		return wintercount;
 	}
 
+	//tel 1 op bij de bijhorende periodcount van de period
 	private void addCount(Period p){
 		if(p.equals(Period.SEMESTER)) {
 			//System.out.println("add semester count");
