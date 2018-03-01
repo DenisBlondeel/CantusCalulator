@@ -19,7 +19,7 @@ public class Cantus implements Comparable<Cantus> {
         this.datum = dateer(parts[0]);
         this.naam = parts[1];
         this.vereniging = parts[2].toLowerCase();
-        System.out.println(str);
+        //System.out.println(str);
         this.plaats = (parts.length>3?parts[3]:null);
         System.out.println(this );
     }
@@ -27,6 +27,10 @@ public class Cantus implements Comparable<Cantus> {
     @Override
     public int compareTo(Cantus cantus) {
         return this.datum.compareTo(cantus.datum);
+    }
+
+    public boolean equals(Cantus c) {
+    	return this.datum.equals(c.datum)&&this.vereniging.equals(c.vereniging)&&this.naam.equals(c.naam)&&this.plaats==c.plaats;
     }
 
     private Calendar dateer(String s){

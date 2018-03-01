@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
@@ -24,7 +25,10 @@ import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.util.ShapeUtilities;
+import javax.swing.JButton;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -54,6 +58,10 @@ public class MainPane extends JFrame implements Observer{
     private JPanel panel;
     private JSplitPane splitPaneH;
 
+    private JScrollPane tabel;
+    private ChartPanel vereniggingenchartpanel;
+    private ChartPanel plaatsenchartpanel;
+    
     public MainPane(Controller controller)
     {
 	System.out.println("draw mainpain");
@@ -73,15 +81,17 @@ public class MainPane extends JFrame implements Observer{
 	//Get the charts and table
     	this.plaatsFlag=containsNotNull(CV.getPlaatsen());
 		
-	JScrollPane tabel = makeScrollTable(CV.getCantussen());
+	tabel = makeScrollTable(CV.getCantussen());
 
 	JFreeChart vereniggingenchart = makePieChart(CV.getVerenigingen());	
+	if(vereniggingenchart==null)
+		System.out.println("null");
 	vereniggingenchart.getPlot().setBackgroundPaint(Color.WHITE);
 	vereniggingenchart.setTitle("Verenigingen");
-	ChartPanel vereniggingenchartpanel = new ChartPanel(vereniggingenchart);
+	this.vereniggingenchartpanel = new ChartPanel(vereniggingenchart);
 
 	JFreeChart plaatsenchart = makePieChart(CV.getPlaatsen());
-	ChartPanel plaatsenchartpanel =  new ChartPanel(plaatsenchart);
+	this.plaatsenchartpanel =  new ChartPanel(plaatsenchart);
 				
 	if(plaatsFlag){
 	    plaatsenchart.setTitle("Locaties");
@@ -97,7 +107,7 @@ public class MainPane extends JFrame implements Observer{
 	jpanel.add(timechart,c);
 	
 	c=new GridBagConstraints();
-	c.gridx=0; c.gridy=1; c.weightx=0.35; c.weighty=.2;
+	c.gridx=0; c.gridy=1; c.gridheight=1;c.weightx=0.35; c.weighty=.2;
 	if(!plaatsFlag)
 	    c.gridwidth=2;
 	c.fill = GridBagConstraints.BOTH;
@@ -105,15 +115,28 @@ public class MainPane extends JFrame implements Observer{
 		
 	if(plaatsFlag){
 	    c=new GridBagConstraints();
-	    c.gridx=1; c.gridy=1; c.weightx=.35; c.weighty=.2; 
+	    c.gridx=1; c.gridy=1; c.gridheight=1;c.weightx=.35; c.weighty=.2; 
 	    c.fill = GridBagConstraints.BOTH;
 	    jpanel.add(plaatsenchartpanel,c);
 	}
 		
 	c=new GridBagConstraints();
-	c.gridx=2; c.gridy=0; c.weightx=1; c.weighty=.1; c.gridheight=2; c.gridwidth=1;
+	c.gridx=2; c.gridy=0; c.weightx=1; c.weighty=1; c.gridheight=2; c.gridwidth=2;
 	c.fill = GridBagConstraints.BOTH;//.VERTICAL;
+	//tabel.setPreferredSize(new Dimension(tabel.getPreferredSize().width,this.getPreferredSize().height*100));	
 	jpanel.add(tabel,c);
+
+	JButton plus = new JButton("+");
+	c=new GridBagConstraints();
+	c.gridx=2; c.gridy=2; c.weightx=.01; c.weighty=.01;
+	c.anchor= GridBagConstraints.SOUTHEAST;
+	jpanel.add(plus,c);	
+	
+	JButton minus = new JButton("-");
+	c=new GridBagConstraints();
+	c.gridx=3; c.gridy=2; c.weightx=.01; c.weighty=.01;
+	c.anchor= GridBagConstraints.SOUTHEAST;
+	jpanel.add(minus,c);
 
 	JTable t = (JTable) tabel.getViewport().getView();
 	
@@ -122,7 +145,30 @@ public class MainPane extends JFrame implements Observer{
             updateRows(t.getSelectedRows(), t,timechart,vereniggingenchartpanel,plaatsenchartpanel);
         });
 
+	minus.addActionListener(new ActionListener() {    	  
+	    public void actionPerformed(ActionEvent e) {
+		JTable actiontabel = (JTable) tabel.getViewport().getView(); 
+		System.out.println(getRows(actiontabel.getSelectedRows(),actiontabel).toString());
+		CV.deleteCantussen(getRows(actiontabel.getSelectedRows(),actiontabel));
+	    	tabel.setViewport(makeScrollTable(CV.getCantussen()).getViewport());
+	    	System.out.println(actiontabel.getRowCount());
+	    }
+	});
+
         controller.screen.mainFrame.setVisible(true);
+    }
+
+    public ArrayList<String> getRows(int[] rows, JTable t){
+	StringBuilder s = new StringBuilder();
+	ArrayList<String> a = new ArrayList<>();
+	for(int i: rows){
+	   s = new StringBuilder();
+	   for(int j = 0; j<t.getColumnCount();j++){
+		s.append(t.getValueAt(i,j).toString()+",");
+	   }
+	   a.add(s.toString());
+	}
+	return(a);
     }
 	
     //update de charts aan de hand van de rijen die aangeduid zijn in de tabel
@@ -244,7 +290,7 @@ public class MainPane extends JFrame implements Observer{
 
     //construeer een piechart van een dataset. wordt gebruikt om de verenigingen en de plaatsen in een piechart te zetten.
     public JFreeChart makePieChart(List<String> dataset){
-		if(plaatsFlag){
+		if(containsNotNull(dataset)){
 			dataset.sort(String::compareTo);
 		} else {
 			return null;

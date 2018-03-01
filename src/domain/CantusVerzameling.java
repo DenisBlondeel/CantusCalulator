@@ -60,6 +60,21 @@ public class CantusVerzameling {
 		return ret;
 	}
 	
+	public void deleteCantussen(ArrayList<String> l){
+		for(String s: l){
+		    Cantus c = new Cantus(s);
+		    this.Cantussen.remove(c);
+		    ListIterator<Cantus> iter = this.Cantussen.listIterator();
+		    while(iter.hasNext()){
+		        if(iter.next().equals(c)){
+		            iter.remove();
+			    System.out.println(c.toString());
+			}
+		    }
+		}
+		System.out.println("newSize =" +this.Cantussen.size());
+	}
+
 	void timeline()
 	{
 		System.out.println("draw timeline");
