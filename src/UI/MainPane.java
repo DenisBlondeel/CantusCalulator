@@ -84,8 +84,6 @@ public class MainPane extends JFrame implements Observer{
 	tabel = makeScrollTable(CV.getCantussen());
 
 	JFreeChart vereniggingenchart = makePieChart(CV.getVerenigingen());	
-	if(vereniggingenchart==null)
-		System.out.println("null");
 	vereniggingenchart.getPlot().setBackgroundPaint(Color.WHITE);
 	vereniggingenchart.setTitle("Verenigingen");
 	this.vereniggingenchartpanel = new ChartPanel(vereniggingenchart);
@@ -151,7 +149,10 @@ public class MainPane extends JFrame implements Observer{
 		System.out.println(getRows(actiontabel.getSelectedRows(),actiontabel).toString());
 		CV.deleteCantussen(getRows(actiontabel.getSelectedRows(),actiontabel));
 	    	tabel.setViewport(makeScrollTable(CV.getCantussen()).getViewport());
-	    	System.out.println(actiontabel.getRowCount());
+		JFreeChart vereniggingenchart = makePieChart(CV.getVerenigingen());	
+		vereniggingenchart.getPlot().setBackgroundPaint(Color.WHITE);
+		vereniggingenchart.setTitle("Verenigingen");
+		vereniggingenchartpanel.setChart(vereniggingenchart);
 	    }
 	});
 
